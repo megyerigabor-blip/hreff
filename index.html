@@ -1,0 +1,4201 @@
+<title>Palotaliget Elszámolási Dashboard</title>
+<style>
+:root{
+  color-scheme: light;
+  --page:            #f6f5f1;
+  --surface-1:       #ffffff;
+  --surface-2:       #fbfaf7;
+  --navy:            #101d30;
+  --navy-2:          #17293f;
+  --gold:            #b3872f;
+  --gold-soft:       #e9d9b2;
+  --text-primary:    #0b0b0b;
+  --text-secondary:  #52514e;
+  --text-muted:      #898781;
+  --grid:            #e1e0d9;
+  --baseline:        #c3c2b7;
+  --border:          rgba(11,11,11,0.10);
+  --border-strong:   rgba(11,11,11,0.16);
+
+  --s1: #2a78d6; /* blue    */
+  --s2: #eb6834; /* orange  */
+  --s3: #1baf7a; /* aqua    */
+  --s4: #eda100; /* yellow  */
+  --s5: #e87ba4; /* magenta */
+  --s6: #008300; /* green   */
+  --s7: #4a3aa7; /* violet  */
+
+  --good:     #0ca30c;
+  --warning:  #fab219;
+  --serious:  #ec835a;
+  --critical: #d03b3b;
+  --good-bg:      #e5f6e5;
+  --warning-bg:   #fff4dd;
+  --serious-bg:   #fdece4;
+  --critical-bg:  #fbe6e6;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --page:            #0d0d0d;
+    --surface-1:       #1a1a19;
+    --surface-2:       #1f1f1d;
+    --navy:            #0a1420;
+    --navy-2:          #0f1e30;
+    --gold:            #d8b25c;
+    --gold-soft:       #3a2f15;
+    --text-primary:    #ffffff;
+    --text-secondary:  #c3c2b7;
+    --text-muted:      #94928a;
+    --grid:            #2c2c2a;
+    --baseline:        #383835;
+    --border:          rgba(255,255,255,0.10);
+    --border-strong:   rgba(255,255,255,0.18);
+
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+    --s5: #d55181;
+    --s6: #1c9a1c;
+    --s7: #9085e9;
+
+    --good:     #0ca30c;
+    --warning:  #fab219;
+    --serious:  #ec835a;
+    --critical: #e66767;
+    --good-bg:      #123219;
+    --warning-bg:   #34290c;
+    --serious-bg:   #331d14;
+    --critical-bg:  #351515;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:            #0d0d0d;
+  --surface-1:       #1a1a19;
+  --surface-2:       #1f1f1d;
+  --navy:            #0a1420;
+  --navy-2:          #0f1e30;
+  --gold:            #d8b25c;
+  --gold-soft:       #3a2f15;
+  --text-primary:    #ffffff;
+  --text-secondary:  #c3c2b7;
+  --text-muted:      #94928a;
+  --grid:            #2c2c2a;
+  --baseline:        #383835;
+  --border:          rgba(255,255,255,0.10);
+  --border-strong:   rgba(255,255,255,0.18);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --s5: #d55181; --s6: #1c9a1c; --s7: #9085e9;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #e66767;
+  --good-bg: #123219; --warning-bg: #34290c; --serious-bg: #331d14; --critical-bg: #351515;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--page);
+  color:var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size:14px;
+  line-height:1.45;
+}
+::selection{ background: var(--gold-soft); }
+
+/* ---------- header ---------- */
+header.top{
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+  color:#fff;
+  padding: 22px clamp(16px,4vw,40px) 20px;
+  border-bottom: 3px solid var(--gold);
+}
+.top-inner{ display:flex; align-items:center; gap:16px; max-width:1440px; margin:0 auto; flex-wrap:wrap;}
+.brand-mark{
+  width:44px;height:44px;border-radius:10px;flex:0 0 auto;
+  background: radial-gradient(circle at 30% 30%, var(--gold) 0%, #8a6421 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:15px;letter-spacing:0.5px;color:#1a1206;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+.top-titles{flex:1 1 320px; min-width:220px;}
+.top-titles h1{
+  margin:0; font-size:19px; font-weight:600; letter-spacing:0.2px; color:#fff;
+}
+.top-titles .sub{ margin-top:3px; font-size:12.5px; color:#c8cede; }
+.top-meta{
+  display:flex; gap:22px; flex-wrap:wrap; font-size:11.5px; color:#aab2c4;
+}
+.top-meta b{ color:#eee0bd; font-weight:600; }
+
+/* ---------- tabs ---------- */
+nav.tabs{
+  background:var(--surface-1);
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:40;
+  overflow-x:auto;
+}
+.tabs-inner{ display:flex; max-width:1440px; margin:0 auto; padding:0 clamp(8px,3vw,32px); gap:2px;}
+.tab-btn{
+  appearance:none; border:none; background:transparent; cursor:pointer;
+  padding:13px 16px 11px; font-size:13.5px; font-weight:600; color:var(--text-secondary);
+  border-bottom:3px solid transparent; white-space:nowrap;
+  font-family:inherit;
+}
+.tab-btn:hover{ color:var(--text-primary); }
+.tab-btn.active{ color:var(--text-primary); border-bottom-color:var(--gold); }
+.tab-btn .cnt{
+  display:inline-block; margin-left:6px; padding:1px 6px; border-radius:9px;
+  background:var(--surface-2); border:1px solid var(--border); font-size:10.5px; color:var(--text-muted);
+}
+.tab-btn.alert .cnt{ background:var(--critical-bg); color:var(--critical); border-color:transparent; font-weight:700;}
+
+main{ max-width:1440px; margin:0 auto; padding: 20px clamp(12px,3vw,32px) 60px; }
+.tab-panel{ display:none; }
+.tab-panel.active{ display:block; animation: fade .18s ease; }
+@keyframes fade{ from{opacity:0;} to{opacity:1;} }
+
+/* ---------- kpi cards ---------- */
+.kpi-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr)); gap:10px; margin-bottom:18px;
+}
+.kpi{
+  background:var(--surface-1); border:1px solid var(--border); border-radius:10px;
+  padding:13px 14px; position:relative; overflow:hidden;
+}
+.kpi::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--gold);
+}
+.kpi.flag::before{ background:var(--critical); }
+.kpi .lbl{ font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.4px;}
+.kpi .val{ font-size:21px; font-weight:700; margin-top:4px; letter-spacing:-0.2px; }
+.kpi .sub{ font-size:11px; color:var(--text-secondary); margin-top:3px;}
+.kpi .sub.good{ color:var(--good); }
+.kpi .sub.bad{ color:var(--critical); font-weight:600;}
+
+/* ---------- cards / sections ---------- */
+.card{
+  background:var(--surface-1); border:1px solid var(--border); border-radius:12px;
+  padding:16px 18px 18px; margin-bottom:16px;
+}
+.card h2{ margin:0 0 2px; font-size:14.5px; font-weight:700; }
+.card .hint{ font-size:11.5px; color:var(--text-muted); margin-bottom:10px;}
+.grid-2{ display:grid; grid-template-columns:1.3fr 1fr; gap:16px; }
+.grid-2b{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:900px){ .grid-2,.grid-2b{ grid-template-columns:1fr; } }
+
+.chart-scroll{ overflow-x:auto; }
+.chart-scroll svg{ display:block; width:100%; height:auto; }
+
+.legend{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:8px; font-size:11.5px; color:var(--text-secondary);}
+.legend .item{ display:flex; align-items:center; gap:6px; }
+.legend .sw{ width:10px;height:10px;border-radius:3px; flex:0 0 auto;}
+
+/* ---------- filter bar ---------- */
+.filterbar{
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  background:var(--surface-1); border:1px solid var(--border); border-radius:12px;
+  padding:12px 14px; margin-bottom:14px;
+}
+.filterbar .fgroup{ display:flex; flex-direction:column; gap:3px; }
+.filterbar label{ font-size:10.5px; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.3px;}
+select, input[type=text], input[type=date]{
+  font-family:inherit; font-size:12.5px; padding:6px 8px; border-radius:7px;
+  border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text-primary);
+  min-width:120px;
+}
+input[type=text]{ min-width:200px; }
+.chk{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); font-weight:600; }
+.chk input{ width:15px;height:15px; accent-color:var(--critical); }
+.btn{
+  font-family:inherit; font-size:12px; font-weight:700; padding:7px 13px; border-radius:7px;
+  border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text-primary); cursor:pointer;
+}
+.btn:hover{ border-color:var(--gold); color:var(--gold); }
+.btn.primary{ background:var(--navy); color:#fff; border-color:var(--navy); }
+.btn.primary:hover{ opacity:.9; color:#fff; }
+.spacer{ flex:1 1 auto; }
+.chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.chip{
+  font-size:11.5px; padding:4px 9px 4px 8px; border-radius:14px; border:1px solid var(--border-strong);
+  background:var(--surface-2); color:var(--text-secondary); cursor:pointer; user-select:none;
+  display:flex; align-items:center; gap:5px;
+}
+.chip .dot{ width:8px;height:8px;border-radius:50%; flex:0 0 auto;}
+.chip.active{ background:var(--navy); color:#fff; border-color:var(--navy); font-weight:600;}
+:root[data-theme="dark"] .chip.active, @media (prefers-color-scheme: dark){ }
+
+/* ---------- table ---------- */
+.tbl-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:12px; }
+table{ border-collapse:collapse; width:100%; font-size:12.3px; min-width:900px; }
+thead th{
+  position:sticky; top:0; background:var(--surface-2); text-align:left; padding:9px 10px;
+  font-size:10.5px; text-transform:uppercase; letter-spacing:.3px; color:var(--text-muted);
+  border-bottom:1px solid var(--border); cursor:pointer; white-space:nowrap; font-weight:700;
+}
+thead th:hover{ color:var(--text-primary); }
+thead th.sorted{ color:var(--gold); }
+thead th .arrow{ font-size:9px; margin-left:3px; }
+tbody td{ padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; white-space:nowrap;}
+tbody td.wrap{ white-space:normal; min-width:160px; }
+tbody tr{ border-left:3px solid transparent; }
+tbody tr:hover{ background:var(--surface-2); }
+tbody tr.r-critical{ border-left-color:var(--critical); }
+tbody tr.r-warning{ border-left-color:var(--warning); }
+tbody tr.r-muted{ opacity:.55; font-style:italic; }
+.num{ text-align:right; font-variant-numeric:tabular-nums; }
+tfoot td{ padding:9px 10px; font-weight:700; background:var(--surface-2); border-top:2px solid var(--border-strong); font-variant-numeric:tabular-nums;}
+.badge{ display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px; white-space:nowrap;}
+.badge.good{ background:var(--good-bg); color:var(--good); }
+.badge.crit{ background:var(--critical-bg); color:var(--critical); }
+.badge.warn{ background:var(--warning-bg); color:#8a6100; }
+:root[data-theme=dark] .badge.warn, @media (prefers-color-scheme:dark){ .badge.warn{ color:var(--warning);} }
+.badge.muted{ background:var(--surface-2); color:var(--text-muted); border:1px solid var(--border);}
+.note-txt{ color:var(--text-secondary); font-size:11.8px; }
+.mini{ font-size:10.5px; color:var(--text-muted); }
+tr.expand-row td{ background:var(--surface-2); white-space:normal; }
+.expand-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px 22px; padding:6px 4px;}
+.expand-grid .k{ font-size:10px; text-transform:uppercase; color:var(--text-muted); font-weight:700; letter-spacing:.3px;}
+.expand-grid .v{ font-size:12.5px; margin-top:2px; }
+.row-toggle{ cursor:pointer; }
+.row-toggle:hover{ text-decoration:underline; }
+
+/* ---------- tooltip ---------- */
+#viz-tooltip{
+  position:fixed; pointer-events:none; z-index:200; background:var(--navy); color:#fff;
+  border-radius:8px; padding:8px 11px; font-size:11.5px; box-shadow:0 6px 18px rgba(0,0,0,.3);
+  max-width:260px; display:none; line-height:1.5;
+}
+#viz-tooltip b{ color:var(--gold-soft); }
+#viz-tooltip .tt-row{ display:flex; justify-content:space-between; gap:14px; }
+#viz-tooltip .tt-sw{ display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;}
+
+/* ---------- misc ---------- */
+.footer-note{ text-align:center; color:var(--text-muted); font-size:11px; margin-top:26px; padding-top:14px; border-top:1px solid var(--border); }
+.stack{ display:flex; flex-direction:column; gap:10px; }
+.flagcard{
+  border:1px solid var(--border); border-left:4px solid var(--critical); border-radius:10px;
+  padding:11px 13px; background:var(--surface-1);
+}
+.flagcard.warn{ border-left-color:var(--warning); }
+.flagcard .fc-top{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:baseline;}
+.flagcard .fc-title{ font-weight:700; font-size:13px; }
+.flagcard .fc-amt{ font-weight:700; font-variant-numeric:tabular-nums; }
+.flagcard .fc-note{ margin-top:5px; font-size:12px; color:var(--text-secondary); }
+.meter{ height:9px; border-radius:5px; background:var(--surface-2); border:1px solid var(--border); overflow:hidden; position:relative;}
+.meter > i{ display:block; height:100%; background:var(--good); }
+.supplier-row{ display:grid; grid-template-columns:140px 1fr 46px; gap:10px; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); font-size:12px;}
+.supplier-row:last-child{ border-bottom:none; }
+.section-title{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--text-muted); margin:4px 0 10px;}
+select.small{ min-width:auto; }
+.report-controls{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+.helptext{ font-size:11.5px; color:var(--text-muted); margin-top:8px;}
+.empty-state{ text-align:center; padding:30px; color:var(--text-muted); font-size:13px;}
+</style>
+
+<div id="viz-tooltip"></div>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand-mark">P·I</div>
+    <div class="top-titles">
+      <h1>Palotaliget — Számla–utalás elszámolási dashboard</h1>
+      <div class="sub">Indotek konzorciumi anyag · XV. kerületi út- és közműfejlesztés</div>
+    </div>
+    <div class="top-meta">
+      <div>Forrás: <b id="meta-source">—</b></div>
+      <div>Adatállapot: <b id="meta-date">—</b></div>
+      <div>Tételek: <b id="meta-count">—</b></div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner" id="tabnav"></div>
+</nav>
+
+<main>
+  <div class="tab-panel active" id="panel-overview"></div>
+  <div class="tab-panel" id="panel-items"></div>
+  <div class="tab-panel" id="panel-suppliers"></div>
+  <div class="tab-panel" id="panel-report"></div>
+  <div class="tab-panel" id="panel-prev"></div>
+  <div class="tab-panel" id="panel-flags"></div>
+  <div class="footer-note">Palotaliget / Indotek elszámolási dashboard · generálva a felhasznált Excel-kimutatás alapján · minden összeg Ft, ÁFÁ-val vagy nettó jelölés szerint</div>
+</main>
+
+<script>
+const DATA = {
+ "items": [
+  {
+   "sor": 1,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00048",
+   "tipus": "Részszámla (1. sz.)",
+   "teljesites": "2023-07-31",
+   "hatarido": "2023-09-07",
+   "netto": 64994146,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 6499414,
+   "fizetendo": 58494732,
+   "utalasDatum": "2023-09-18",
+   "utaltOsszeg": 58494732,
+   "elteres": 0,
+   "kozlemeny": "2023/00048 sz számla",
+   "utalasiFajl": "2023_00048_1_sz__részszámla.pdf",
+   "szamlaFajl": "2023_00048_1_sz__részszámla.jpg",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 2,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00057",
+   "tipus": "Részszámla (2. sz.)",
+   "teljesites": "2023-08-31",
+   "hatarido": "2023-10-12",
+   "netto": 185378351,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 18537836,
+   "fizetendo": 166840515,
+   "utalasDatum": "2023-11-22",
+   "utaltOsszeg": 166840515,
+   "elteres": 0,
+   "kozlemeny": "2023/00057 sz. szla kiegy.",
+   "utalasiFajl": "2023_00057_2_sz__részszámla.pdf",
+   "szamlaFajl": "2023_00057_2_sz__részszámla.jpg",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 3,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00058",
+   "tipus": "Végszámla",
+   "teljesites": "2023-08-31",
+   "hatarido": "2023-10-12",
+   "netto": 8994537,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 2428525,
+   "visszatartas": 0,
+   "fizetendo": 11423062,
+   "utalasDatum": "2023-11-22",
+   "utaltOsszeg": 11423062,
+   "elteres": 0,
+   "kozlemeny": "2023/00058 sz. szla kiegy.",
+   "utalasiFajl": "2023_00058_Végszámla.pdf",
+   "szamlaFajl": "2023_00058_Végszámla.jpg",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 4,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00064",
+   "tipus": "Részszámla (3. sz.)",
+   "teljesites": "2023-09-30",
+   "hatarido": "2023-11-08",
+   "netto": 168282059,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 16828206,
+   "fizetendo": 151453853,
+   "utalasDatum": "2023-11-10",
+   "utaltOsszeg": 151453853,
+   "elteres": 0,
+   "kozlemeny": "2023/00064",
+   "utalasiFajl": "2023_00064_3_sz__részszámla.pdf",
+   "szamlaFajl": "2023_00064_3_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 5,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00083",
+   "tipus": "Részszámla (4. sz.)",
+   "teljesites": "2023-10-31",
+   "hatarido": "2023-12-07",
+   "netto": 123181548,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 12318154,
+   "fizetendo": 110863394,
+   "utalasDatum": "2023-11-30",
+   "utaltOsszeg": 110863394,
+   "elteres": 0,
+   "kozlemeny": "2023/00083",
+   "utalasiFajl": "2023_00083_4_sz__részszámla.pdf",
+   "szamlaFajl": "2023_00083_4_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 6,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00105",
+   "tipus": "Részszámla (5. sz.)",
+   "teljesites": "2023-11-30",
+   "hatarido": "2024-01-05",
+   "netto": 114418064,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 11441806,
+   "fizetendo": 102976258,
+   "utalasDatum": "2023-12-15",
+   "utaltOsszeg": 102976258,
+   "elteres": 0,
+   "kozlemeny": "2023/00105",
+   "utalasiFajl": "2023_00105_5_sz__részszámla.pdf",
+   "szamlaFajl": "2023_00105_5_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 7,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00009",
+   "tipus": "Részszámla (6. sz.)",
+   "teljesites": "2024-01-31",
+   "hatarido": "2024-03-08",
+   "netto": 3511919,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 351192,
+   "fizetendo": 3160727,
+   "utalasDatum": "2024-02-28",
+   "utaltOsszeg": 3160727,
+   "elteres": 0,
+   "kozlemeny": "2024/00009 sz. szla kiegy.",
+   "utalasiFajl": "2024_00009_6_sz__részszámla.pdf",
+   "szamlaFajl": "2024_00009_6_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 8,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00010",
+   "tipus": "Részszámla (7. sz.)",
+   "teljesites": "2024-02-29",
+   "hatarido": "2024-04-05",
+   "netto": 32955892,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 3295590,
+   "fizetendo": 29660302,
+   "utalasDatum": "2024-03-14",
+   "utaltOsszeg": 29660302,
+   "elteres": 0,
+   "kozlemeny": "2024/00010 sz. szla kiegy.",
+   "utalasiFajl": "2024_00010_7__sz__részszámla.pdf",
+   "szamlaFajl": "2024_00010_7__sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 9,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00016",
+   "tipus": "Részszámla (8. sz.)",
+   "teljesites": "2024-03-31",
+   "hatarido": "2024-05-08",
+   "netto": 62712654,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 6271266,
+   "fizetendo": 56441388,
+   "utalasDatum": "2024-05-03",
+   "utaltOsszeg": 56441388,
+   "elteres": 0,
+   "kozlemeny": "2024/00016 sz. szla kiegy.",
+   "utalasiFajl": "2024_00016_8__sz__részszámla.pdf",
+   "szamlaFajl": "2024_00016_8__sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 10,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00022",
+   "tipus": "Részszámla (9. sz.)",
+   "teljesites": "2024-04-30",
+   "hatarido": "2024-06-05",
+   "netto": 10966867,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 1096686,
+   "fizetendo": 9870181,
+   "utalasDatum": "2024-06-06",
+   "utaltOsszeg": 9870181,
+   "elteres": 0,
+   "kozlemeny": "2024/00022",
+   "utalasiFajl": "2024_00022_9_sz__részszámla.pdf",
+   "szamlaFajl": "2024_00022_9_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 11,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00075",
+   "tipus": "Részszámla (10. sz.)",
+   "teljesites": "2024-11-20",
+   "hatarido": "2024-12-24",
+   "netto": 13510417,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 1351042,
+   "fizetendo": 12159375,
+   "utalasDatum": "2024-12-17",
+   "utaltOsszeg": 12159375,
+   "elteres": 0,
+   "kozlemeny": "2024/00075 sz. szla kiegy.",
+   "utalasiFajl": "2024_00075_10_sz__részszámla.pdf",
+   "szamlaFajl": "2024_00075_10_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 12,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2025/00024",
+   "tipus": "Végszámla",
+   "teljesites": "2025-06-06",
+   "hatarido": "2025-07-19",
+   "netto": 15989755,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 4317234,
+   "visszatartas": 0,
+   "fizetendo": 20306989,
+   "utalasDatum": "2025-07-03",
+   "utaltOsszeg": 20306989,
+   "elteres": 0,
+   "kozlemeny": "2025/00024 sz. szla kiegy.",
+   "utalasiFajl": "2025_00024_Végszámla.pdf",
+   "szamlaFajl": "2025_00024_Végszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 13,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2025/00067",
+   "tipus": "Részszámla (11. sz.)",
+   "teljesites": "2025-11-30",
+   "hatarido": "2026-01-14",
+   "netto": 71247797,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 7124780,
+   "fizetendo": 64123017,
+   "utalasDatum": "2026-01-08",
+   "utaltOsszeg": 64123017,
+   "elteres": 0,
+   "kozlemeny": "2025/00067 sz. szla kiegy.",
+   "utalasiFajl": "2025_00067_11_sz__részszámla.pdf",
+   "szamlaFajl": "2025_00067_11_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 14,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00003",
+   "tipus": "Részszámla (12. sz.)",
+   "teljesites": "2025-12-31",
+   "hatarido": "2026-02-11",
+   "netto": 90039597,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 9003960,
+   "fizetendo": 81035637,
+   "utalasDatum": "2026-02-06",
+   "utaltOsszeg": 81035637,
+   "elteres": 0,
+   "kozlemeny": "2026/00003 sz. szla kiegy.",
+   "utalasiFajl": "2026_00003_12_sz__részszámla.pdf",
+   "szamlaFajl": "2026_00003_12_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 15,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00006",
+   "tipus": "Részszámla (13. sz.)",
+   "teljesites": "2026-02-28",
+   "hatarido": "2026-04-11",
+   "netto": 16488598,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 1648860,
+   "fizetendo": 14839738,
+   "utalasDatum": "2026-03-25",
+   "utaltOsszeg": 14839738,
+   "elteres": 0,
+   "kozlemeny": "2026/00006 sz. szla kiegy.",
+   "utalasiFajl": "2026_00006_13__sz__részszámla.pdf",
+   "szamlaFajl": "2026_00006_13__sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 16,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00009",
+   "tipus": "Részszámla (14. sz.)",
+   "teljesites": "2026-03-31",
+   "hatarido": "2026-05-12",
+   "netto": 114622549,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 11462254,
+   "fizetendo": 103160295,
+   "utalasDatum": "2026-05-08",
+   "utaltOsszeg": 103160295,
+   "elteres": 0,
+   "kozlemeny": "2026/00009 sz. szla kiegy.",
+   "utalasiFajl": "2026_00009_14_sz__részszámla.pdf",
+   "szamlaFajl": "2026_00009_14_sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 17,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00014",
+   "tipus": "Részszámla (15. sz.)",
+   "teljesites": "2026-04-30",
+   "hatarido": "2026-06-07",
+   "netto": 90359947,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 9035994,
+   "fizetendo": 81323953,
+   "utalasDatum": "2026-05-22",
+   "utaltOsszeg": 81323953,
+   "elteres": 0,
+   "kozlemeny": "2026/00014 sz. szla kiegy.",
+   "utalasiFajl": "2026_00014_15__sz__részszámla.pdf",
+   "szamlaFajl": "2026_00014_15__sz__részszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 18,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00032",
+   "tipus": "Végszámla",
+   "teljesites": "2026-06-19",
+   "hatarido": "2026-07-29",
+   "netto": 55879206,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 5586520,
+   "fizetendo": 89265364,
+   "utalasDatum": "2026-07-16",
+   "utaltOsszeg": 89265364,
+   "elteres": 0,
+   "kozlemeny": "2026/00032 sz. szla kiegy.",
+   "utalasiFajl": "2026_00032_Végszámla.pdf",
+   "szamlaFajl": "2026_00032_Végszámla.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "A számlán szereplő fizetendő korábbi visszatartások felszabadítását is tartalmazza"
+  },
+  {
+   "sor": 19,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000343",
+   "tipus": "Számla",
+   "teljesites": "2023-11-06",
+   "hatarido": "2023-12-06",
+   "netto": 32209425,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 4831414,
+   "fizetendo": 27378011,
+   "utalasDatum": "2023-12-08",
+   "utaltOsszeg": 27378011,
+   "elteres": 0,
+   "kozlemeny": "EINV000000343",
+   "utalasiFajl": "EINV000000343_Villamosipari_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000343_Villamosipari_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 20,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000352",
+   "tipus": "Számla",
+   "teljesites": "2023-12-16",
+   "hatarido": "2024-01-15",
+   "netto": 3206000,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 0,
+   "fizetendo": 3206000,
+   "utalasDatum": "2024-01-26",
+   "utaltOsszeg": 3206000,
+   "elteres": 0,
+   "kozlemeny": "EINV000000352 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000352_Villamos_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000352_Villamos_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 21,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000353",
+   "tipus": "Számla",
+   "teljesites": "2023-12-16",
+   "hatarido": "2024-01-15",
+   "netto": 36071399,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 3607140,
+   "fizetendo": 32464259,
+   "utalasDatum": "2024-01-10",
+   "utaltOsszeg": 32464259,
+   "elteres": 0,
+   "kozlemeny": "EINV000000353",
+   "utalasiFajl": "EINV000000353_Villamos_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000353_Villamos_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 22,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000355",
+   "tipus": "Számla",
+   "teljesites": "2023-12-31",
+   "hatarido": "2024-02-08",
+   "netto": 15601307,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 2340196,
+   "fizetendo": 13261111,
+   "utalasDatum": "2024-01-26",
+   "utaltOsszeg": 13261111,
+   "elteres": 0,
+   "kozlemeny": "EINV000000355 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000355_Családiház_villamos_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000355_Családiház_villamos_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 23,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000363",
+   "tipus": "Számla",
+   "teljesites": "2024-02-05",
+   "hatarido": "2024-03-16",
+   "netto": 17110414,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 1711041,
+   "fizetendo": 15399373,
+   "utalasDatum": "2024-03-07",
+   "utaltOsszeg": 14543852,
+   "elteres": -855521,
+   "kozlemeny": "EINV000000363 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000363_Villamos_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000363_Villamos_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "ELTÉRÉS: 855 521 Ft-tal kevesebb az utalás (a nettó 5%-a) – vélhetően további garanciális visszatartás. EGYEZTETENDŐ"
+  },
+  {
+   "sor": 24,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000365",
+   "tipus": "Számla",
+   "teljesites": "2024-03-24",
+   "hatarido": "2024-04-23",
+   "netto": 6541007,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 981151,
+   "fizetendo": 5559856,
+   "utalasDatum": "2024-04-24",
+   "utaltOsszeg": 5559856,
+   "elteres": 0,
+   "kozlemeny": "EINV000000365",
+   "utalasiFajl": "EINV000000365_Villamos_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000365_Villamos_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 25,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000366",
+   "tipus": "Számla",
+   "teljesites": "2024-03-27",
+   "hatarido": "2024-04-29",
+   "netto": 444000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 119880,
+   "visszatartas": 0,
+   "fizetendo": 563880,
+   "utalasDatum": "2024-04-24",
+   "utaltOsszeg": 563880,
+   "elteres": 0,
+   "kozlemeny": "EINV000000366",
+   "utalasiFajl": "EINV000000366_Védő_csövezés_optikának_Hexagon.pdf",
+   "szamlaFajl": "EINV000000366_Védő_csövezés_optikának_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 26,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000375",
+   "tipus": "Számla",
+   "teljesites": "2024-05-09",
+   "hatarido": "2024-06-11",
+   "netto": 7000000,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 700000,
+   "fizetendo": 6300000,
+   "utalasDatum": "2024-06-06",
+   "utaltOsszeg": 6300000,
+   "elteres": 0,
+   "kozlemeny": "EINV000000375 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000375_Fogyasztásmérő_elosztók_szerelése_Hexagon.pdf",
+   "szamlaFajl": "EINV000000375_Fogyasztásmérő_elosztók_szerelése_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 27,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000378",
+   "tipus": "Számla",
+   "teljesites": "2024-05-28",
+   "hatarido": "2024-06-27",
+   "netto": 4961242,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 744186,
+   "fizetendo": 4217056,
+   "utalasDatum": "2024-06-12",
+   "utaltOsszeg": 4217056,
+   "elteres": 0,
+   "kozlemeny": "EINV000000378 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000378_Villamos_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000378_Villamos_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 28,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000379",
+   "tipus": "Számla",
+   "teljesites": "2024-06-05",
+   "hatarido": "2024-07-12",
+   "netto": 28620000,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 1431000,
+   "fizetendo": 27189000,
+   "utalasDatum": "2024-06-20",
+   "utaltOsszeg": 27189000,
+   "elteres": 0,
+   "kozlemeny": "EINV000000379 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000379_Palotaliget_csatlakozó_elosztók_Hexagon.pdf",
+   "szamlaFajl": "EINV000000379_Palotaliget_csatlakozó_elosztók_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 29,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000380",
+   "tipus": "Számla",
+   "teljesites": "2024-06-05",
+   "hatarido": "2024-07-12",
+   "netto": 37100000,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 3710000,
+   "fizetendo": 33390000,
+   "utalasDatum": "2024-06-20",
+   "utaltOsszeg": 33390000,
+   "elteres": 0,
+   "kozlemeny": "EINV000000380 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000380_Palotaliget_fogyasztásmérő_elosztók_Hexagon.pdf",
+   "szamlaFajl": "EINV000000380_Palotaliget_fogyasztásmérő_elosztók_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 30,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000416",
+   "tipus": "Számla",
+   "teljesites": "2025-01-20",
+   "hatarido": "2025-03-14",
+   "netto": 12505206,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 0,
+   "fizetendo": 12505206,
+   "utalasDatum": "2025-03-03",
+   "utaltOsszeg": 23129425,
+   "elteres": 10624219,
+   "kozlemeny": "EINV000000416 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000416_Villamos_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000416_Villamos_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "ELTÉRÉS: az utalás 10 624 219 Ft-tal magasabb a számláról kiolvasott összegnél. A számlakép felülíródott, az összeg OCR-ből származik – ÚJRA ELLENŐRIZENDŐ"
+  },
+  {
+   "sor": 31,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000418",
+   "tipus": "Számla",
+   "teljesites": "2025-02-14",
+   "hatarido": "2025-03-23",
+   "netto": 1500000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 405000,
+   "visszatartas": 0,
+   "fizetendo": 1905000,
+   "utalasDatum": "2025-03-11",
+   "utaltOsszeg": 1905000,
+   "elteres": 0,
+   "kozlemeny": "EINV000000418 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000418_Palotaliget_fogyasztásmérő_elosztók_tervezése_Hexagon.pdf",
+   "szamlaFajl": "EINV000000418_Palotaliget_fogyasztásmérő_elosztók_tervezése_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 32,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000425",
+   "tipus": "Számla",
+   "teljesites": "2025-03-20",
+   "hatarido": "2025-04-19",
+   "netto": 10977193,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 0,
+   "fizetendo": 10977193,
+   "utalasDatum": "2025-04-24",
+   "utaltOsszeg": 12633333,
+   "elteres": 1656140,
+   "kozlemeny": "EINV000000425 sz. szla kiegy.",
+   "utalasiFajl": "EINV000000425_Villamosipari_kivitelezés_Hexagon.pdf",
+   "szamlaFajl": "EINV000000425_Villamosipari_kivitelezés_Hexagon.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "ELTÉRÉS: az utalás 1 656 140 Ft-tal magasabb a számláról kiolvasott összegnél. A számlakép felülíródott, az összeg OCR-ből származik – ÚJRA ELLENŐRIZENDŐ"
+  },
+  {
+   "sor": 33,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000496",
+   "tipus": "Számla",
+   "teljesites": "2026-07-02",
+   "hatarido": "2026-07-19",
+   "netto": 1446383,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 390523,
+   "visszatartas": 0,
+   "fizetendo": 1836906,
+   "utalasDatum": null,
+   "utaltOsszeg": null,
+   "elteres": null,
+   "kozlemeny": null,
+   "utalasiFajl": "—",
+   "szamlaFajl": "EINV000000496_Villamos_kivitelezés_Hexagon.pdf",
+   "statusz": "NINCS UTALÁSI BIZONYLAT",
+   "megjegyzes": null
+  },
+  {
+   "sor": 34,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2023-44",
+   "tipus": "Számla",
+   "teljesites": "2023-07-07",
+   "hatarido": "2023-08-21",
+   "netto": 950000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 256500,
+   "visszatartas": 0,
+   "fizetendo": 1206500,
+   "utalasDatum": "2023-08-03",
+   "utaltOsszeg": 1206500,
+   "elteres": 0,
+   "kozlemeny": "KG-2023-44 sz. szla kiegy.",
+   "utalasiFajl": "KG_2026_44_Alppont_hálozat_létesítése.pdf",
+   "szamlaFajl": "KG_2026_44_Alppont_hálozat_létesítése.jpg",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "Az utalás közleménye KG-2023-44; a bizonylat fájlneve tévesen KG_2026_44"
+  },
+  {
+   "sor": 35,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2023-46",
+   "tipus": "Számla",
+   "teljesites": "2023-07-31",
+   "hatarido": "2023-09-15",
+   "netto": 267000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 72090,
+   "visszatartas": 0,
+   "fizetendo": 339090,
+   "utalasDatum": "2023-08-31",
+   "utaltOsszeg": 339090,
+   "elteres": 0,
+   "kozlemeny": "KG-2023-46",
+   "utalasiFajl": "KG_2023_46_Terepi_Irodai_Mérnöknap.pdf",
+   "szamlaFajl": "KG_2023_46_Terepi_Irodai_Mérnöknap.jpg",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 36,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-32",
+   "tipus": "Számla",
+   "teljesites": "2024-03-14",
+   "hatarido": "2024-06-21",
+   "netto": 330000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 89100,
+   "visszatartas": 0,
+   "fizetendo": 419100,
+   "utalasDatum": "2024-04-12",
+   "utaltOsszeg": 419100,
+   "elteres": 0,
+   "kozlemeny": "KG-2024-14",
+   "utalasiFajl": "KG_2024_32_Terepi_Irodai_Mérnöknap.pdf",
+   "szamlaFajl": "KG_2024_32_Terepi_Irodai_Mérnöknap.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "FIGYELEM: az utalás közleménye „KG-2024-14”, de az összeg pontosan egyezik a KG-2024-32 számlával – egyeztetendő"
+  },
+  {
+   "sor": 37,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-34",
+   "tipus": "Számla",
+   "teljesites": "2024-04-30",
+   "hatarido": "2024-06-21",
+   "netto": 165000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 44550,
+   "visszatartas": 0,
+   "fizetendo": 209550,
+   "utalasDatum": "2024-06-19",
+   "utaltOsszeg": 209550,
+   "elteres": 0,
+   "kozlemeny": "KG-2024-34",
+   "utalasiFajl": "KG_2024_34_Terepi_Irodai_Mérnöknap.pdf",
+   "szamlaFajl": "KG_2024_34_Terepi_Irodai_Mérnöknap.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 38,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-71",
+   "tipus": "Számla",
+   "teljesites": "2024-09-30",
+   "hatarido": "2024-10-29",
+   "netto": 165000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 44550,
+   "visszatartas": 0,
+   "fizetendo": 209550,
+   "utalasDatum": "2024-10-30",
+   "utaltOsszeg": 209550,
+   "elteres": 0,
+   "kozlemeny": "KG-2024-71 sz. szla kiegy.",
+   "utalasiFajl": "KG_2024_71_Terepi_Irodai_Mérnöknap.pdf",
+   "szamlaFajl": "KG_2024_71_Terepi_Irodai_Mérnöknap.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 39,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-73",
+   "tipus": "Számla",
+   "teljesites": "2024-09-23",
+   "hatarido": "2024-10-29",
+   "netto": 389000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 105030,
+   "visszatartas": 0,
+   "fizetendo": 494030,
+   "utalasDatum": "2024-10-30",
+   "utaltOsszeg": 494030,
+   "elteres": 0,
+   "kozlemeny": "KG-2024-73 sz. szla kiegy.",
+   "utalasiFajl": "KG_2024_73_Terepi_Irodai_Mérnöknap.pdf",
+   "szamlaFajl": "KG_2024_73_Terepi_Irodai_Mérnöknap.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 40,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-75",
+   "tipus": "Számla",
+   "teljesites": "2024-09-25",
+   "hatarido": "2024-10-29",
+   "netto": 350000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 94500,
+   "visszatartas": 0,
+   "fizetendo": 444500,
+   "utalasDatum": "2024-10-30",
+   "utaltOsszeg": 444500,
+   "elteres": 0,
+   "kozlemeny": "KG-2024-75 sz. szla kiegy.",
+   "utalasiFajl": "KG_2024_75_Használati_megosztási_rajzok_készítése_tervek_alapján.pdf",
+   "szamlaFajl": "KG_2024_75_Használati_megosztási_rajzok_készítése_tervek_alapján.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 41,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-95",
+   "tipus": "Számla",
+   "teljesites": "2024-11-30",
+   "hatarido": "2025-01-17",
+   "netto": 3575600,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 965412,
+   "visszatartas": 0,
+   "fizetendo": 4541012,
+   "utalasDatum": "2025-01-14",
+   "utaltOsszeg": 4541012,
+   "elteres": 0,
+   "kozlemeny": "KG-2024-95 sz. szla kiegy.",
+   "utalasiFajl": "KG_2024_95_Épületefeltüntetési_földmérési_dokumentáció_készítése.pdf",
+   "szamlaFajl": "KG_2024_95_Épületefeltüntetési_földmérési_dokumentáció_készítése.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 42,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-6",
+   "tipus": "Számla",
+   "teljesites": "2025-01-21",
+   "hatarido": "2025-02-21",
+   "netto": 351000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 94770,
+   "visszatartas": 0,
+   "fizetendo": 445770,
+   "utalasDatum": "2025-02-27",
+   "utaltOsszeg": 445770,
+   "elteres": 0,
+   "kozlemeny": "KG-2025-6 sz. szla kiegy.",
+   "utalasiFajl": "KG_2025_6_Közmű_és_útépítési_munkák.pdf",
+   "szamlaFajl": "KG_2025_6_Közmű_és_útépítési_munkák.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 43,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-9",
+   "tipus": "Számla",
+   "teljesites": "2025-01-31",
+   "hatarido": "2025-01-31",
+   "netto": 287000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 77490,
+   "visszatartas": 0,
+   "fizetendo": 364490,
+   "utalasDatum": "2025-02-18",
+   "utaltOsszeg": 364490,
+   "elteres": 0,
+   "kozlemeny": "KG-2025-9 sz. szla kiegy.",
+   "utalasiFajl": "KG_2025_9_Geodéziai_felmérések.pdf",
+   "szamlaFajl": "KG_2025_9_Geodéziai_felmérések.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 44,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-10",
+   "tipus": "Módosító számla (KG-2025-9-hez)",
+   "teljesites": "2025-01-31",
+   "hatarido": "2025-03-01",
+   "netto": 0,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 0,
+   "visszatartas": 0,
+   "fizetendo": 0,
+   "utalasDatum": null,
+   "utaltOsszeg": null,
+   "elteres": null,
+   "kozlemeny": null,
+   "utalasiFajl": "—",
+   "szamlaFajl": "KG_2025_10_Geodéziai_felmérések.pdf",
+   "statusz": "Nem fizetendő (sztornó / 0 Ft-os módosító)",
+   "megjegyzes": "0 Ft-os módosító – nem fizetendő"
+  },
+  {
+   "sor": 45,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-20",
+   "tipus": "Számla",
+   "teljesites": "2025-03-10",
+   "hatarido": "2025-04-18",
+   "netto": 450000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 121500,
+   "visszatartas": 0,
+   "fizetendo": 571500,
+   "utalasDatum": "2025-03-28",
+   "utaltOsszeg": 571500,
+   "elteres": 0,
+   "kozlemeny": "KG-2025-20 sz. szla kiegy.",
+   "utalasiFajl": "KG_2025_20_Előzetes_vázrajz_Használati_megosztás.pdf",
+   "szamlaFajl": "KG_2025_20_Előzetes_vázrajz_Használati_megosztás.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 46,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-41",
+   "tipus": "Számla",
+   "teljesites": "2025-05-31",
+   "hatarido": "2025-07-06",
+   "netto": 267000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 72090,
+   "visszatartas": 0,
+   "fizetendo": 339090,
+   "utalasDatum": "2025-06-24",
+   "utaltOsszeg": 339090,
+   "elteres": 0,
+   "kozlemeny": "KG-2025-41 sz. szla kiegy.",
+   "utalasiFajl": "KG_2025_41_Helyszíni_kiszállás.pdf",
+   "szamlaFajl": "KG_2025_41_Helyszíni_kiszállás.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 47,
+   "szallito": "Reneszánsz Kertépítő Kft.",
+   "szamlaszam": "REN-2023-33",
+   "tipus": "Végszámla",
+   "teljesites": "2023-09-11",
+   "hatarido": "2023-10-15",
+   "netto": 650000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 175500,
+   "visszatartas": 0,
+   "fizetendo": 825500,
+   "utalasDatum": "2023-10-09",
+   "utaltOsszeg": 825500,
+   "elteres": 0,
+   "kozlemeny": "REN-2023-33 sz. szla kiegy.",
+   "utalasiFajl": "REN_2023_33_fakivágás_munkákhoz_végteljesítés.pdf",
+   "szamlaFajl": "REN_2023_33_fakivágás_munkákhoz_végteljesítés.jpg",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 48,
+   "szallito": "Reneszánsz Kertépítő Kft.",
+   "szamlaszam": "REN-2023-46",
+   "tipus": "Végszámla",
+   "teljesites": "2023-10-18",
+   "hatarido": "2023-11-19",
+   "netto": 305000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 82350,
+   "visszatartas": 0,
+   "fizetendo": 387350,
+   "utalasDatum": "2023-11-08",
+   "utaltOsszeg": 387350,
+   "elteres": 0,
+   "kozlemeny": "REN-2023-46",
+   "utalasiFajl": "REN_2023_46_Lencsike_utca_út_közmű_fakivágás.pdf",
+   "szamlaFajl": "REN_2023_46_Lencsike_utca_út_közmű_fakivágás.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 49,
+   "szallito": "Reneszánsz Kertépítő Kft.",
+   "szamlaszam": "REN-2023-63",
+   "tipus": "Végszámla",
+   "teljesites": "2023-12-31",
+   "hatarido": "2024-02-02",
+   "netto": 1180000,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 318600,
+   "visszatartas": 0,
+   "fizetendo": 1498600,
+   "utalasDatum": "2024-03-07",
+   "utaltOsszeg": 1498600,
+   "elteres": 0,
+   "kozlemeny": "REN-2024-2 sz. szla kiegy.",
+   "utalasiFajl": "REN_2024_2.pdf",
+   "szamlaFajl": "REN_2023_63_fásítási_műszaki_dokumentáció.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "Az utalás közleménye „REN-2024-2” (a módosító száma), az összeg a REN-2023-63 végösszege"
+  },
+  {
+   "sor": 50,
+   "szallito": "Reneszánsz Kertépítő Kft.",
+   "szamlaszam": "REN-2024-2",
+   "tipus": "Módosító számla (REN-2023-63-hoz)",
+   "teljesites": "2023-12-31",
+   "hatarido": "2024-02-02",
+   "netto": 0,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 0,
+   "visszatartas": 0,
+   "fizetendo": 0,
+   "utalasDatum": null,
+   "utaltOsszeg": null,
+   "elteres": null,
+   "kozlemeny": null,
+   "utalasiFajl": "—",
+   "szamlaFajl": "REN_2024_2.pdf",
+   "statusz": "Nem fizetendő (sztornó / 0 Ft-os módosító)",
+   "megjegyzes": "0 Ft-os módosító – az 1 498 600 Ft utalás a REN-2023-63 számlához tartozik"
+  },
+  {
+   "sor": 51,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000036/2025",
+   "tipus": "Részszámla (1. sz.)",
+   "teljesites": "2025-04-04",
+   "hatarido": "2025-05-10",
+   "netto": 9420912,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 2543646,
+   "visszatartas": 1725175,
+   "fizetendo": 10239383,
+   "utalasDatum": "2025-05-09",
+   "utaltOsszeg": 10239383,
+   "elteres": 0,
+   "kozlemeny": "000036/2025 sz. szla kiegy.",
+   "utalasiFajl": "szamla_36_2025.pdf",
+   "szamlaFajl": "szamla_36_2025.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "Visszatartás 10% (1 725 175 Ft) az utalásból levonva"
+  },
+  {
+   "sor": 52,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000101/2025",
+   "tipus": "Számla",
+   "teljesites": "2025-09-23",
+   "hatarido": "2025-10-23",
+   "netto": 265752,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 71753,
+   "visszatartas": 0,
+   "fizetendo": 337505,
+   "utalasDatum": "2025-11-12",
+   "utaltOsszeg": 337505,
+   "elteres": 0,
+   "kozlemeny": "000101/2025 sz. szla kiegy.",
+   "utalasiFajl": "szamla_101_2025.pdf",
+   "szamlaFajl": "szamla_101_2025.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 53,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000023/2026",
+   "tipus": "Részszámla (2. sz.)",
+   "teljesites": "2026-04-30",
+   "hatarido": "2026-05-31",
+   "netto": 5412015,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 1461244,
+   "visszatartas": 1342182,
+   "fizetendo": 5531077,
+   "utalasDatum": "2026-05-22",
+   "utaltOsszeg": 5531077,
+   "elteres": 0,
+   "kozlemeny": "000023/2026 sz. szla kiegy.",
+   "utalasiFajl": "2__reszszámla_23_2026.pdf",
+   "szamlaFajl": "2__reszszámla_23_2026.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "Jólteljesítési + jótállási visszatartás 2×671 091 Ft"
+  },
+  {
+   "sor": 54,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000043/2026",
+   "tipus": "Részszámla (3. sz.)",
+   "teljesites": "2026-07-15",
+   "hatarido": "2026-08-14",
+   "netto": 8031750,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 2168573,
+   "visszatartas": 1079000,
+   "fizetendo": 9121323,
+   "utalasDatum": "2026-07-24",
+   "utaltOsszeg": 9121323,
+   "elteres": 0,
+   "kozlemeny": "000043/2026",
+   "utalasiFajl": "3__rész_fatelepítés_43_2026.pdf",
+   "szamlaFajl": "3__rész_fatelepítés_43_2026.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": "Jólteljesítési + jótállási visszatartás 2×539 500 Ft"
+  },
+  {
+   "sor": 55,
+   "szallito": "Virabel Kft.",
+   "szamlaszam": "25-00/00372",
+   "tipus": "Számla (sztornózva)",
+   "teljesites": "2025-03-28",
+   "hatarido": "2025-05-07",
+   "netto": 8670304,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 0,
+   "fizetendo": 8670304,
+   "utalasDatum": null,
+   "utaltOsszeg": null,
+   "elteres": null,
+   "kozlemeny": null,
+   "utalasiFajl": "—",
+   "szamlaFajl": "250000372_Virabel_földmunka.pdf",
+   "statusz": "Nem fizetendő (sztornó / 0 Ft-os módosító)",
+   "megjegyzes": "Érvénytelenítve a 25-00/00387 számlával – nem fizetendő"
+  },
+  {
+   "sor": 56,
+   "szallito": "Virabel Kft.",
+   "szamlaszam": "25-00/00387",
+   "tipus": "Érvénytelenítő (sztornó) számla",
+   "teljesites": "2025-03-28",
+   "hatarido": "2025-04-09",
+   "netto": -8670304,
+   "afaTipus": "FAD (fordított adózás)",
+   "afa": 0,
+   "visszatartas": 0,
+   "fizetendo": -8670304,
+   "utalasDatum": null,
+   "utaltOsszeg": null,
+   "elteres": null,
+   "kozlemeny": null,
+   "utalasiFajl": "—",
+   "szamlaFajl": "250000387_Virabel_mínuszos_számla.pdf",
+   "statusz": "Nem fizetendő (sztornó / 0 Ft-os módosító)",
+   "megjegyzes": "Sztornó – nem fizetendő"
+  },
+  {
+   "sor": 57,
+   "szallito": "Virabel Kft.",
+   "szamlaszam": "25-00/00388",
+   "tipus": "Számla",
+   "teljesites": "2025-03-28",
+   "hatarido": "2025-05-09",
+   "netto": 8670304,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 2340982,
+   "visszatartas": 0,
+   "fizetendo": 11011286,
+   "utalasDatum": "2025-04-24",
+   "utaltOsszeg": 11011286,
+   "elteres": 0,
+   "kozlemeny": "25-00/00388 sz. szla kiegy.",
+   "utalasiFajl": "250000388_Virabel_földmunka.pdf",
+   "szamlaFajl": "250000388_Virabel_földmunka.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  },
+  {
+   "sor": 58,
+   "szallito": "Mélyépítő Labor Kft.",
+   "szamlaszam": "ML03269/2023",
+   "tipus": "Végszámla",
+   "teljesites": "2023-09-11",
+   "hatarido": "2023-10-11",
+   "netto": 328300,
+   "afaTipus": "Normál 27% ÁFA",
+   "afa": 88641,
+   "visszatartas": 0,
+   "fizetendo": 416941,
+   "utalasDatum": "2023-10-17",
+   "utaltOsszeg": 416941,
+   "elteres": 0,
+   "kozlemeny": "ML03269/2023 sz. szla kiegy.",
+   "utalasiFajl": "Mélyépítő.pdf",
+   "szamlaFajl": "Mélyépítő.pdf",
+   "statusz": "Kiegyenlítve",
+   "megjegyzes": null
+  }
+ ],
+ "missing": [
+  {
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000496",
+   "tipus": "Számla",
+   "hatarido": "2026-07-19",
+   "fizetendo": 1836906,
+   "megjegyzes": null
+  }
+ ],
+ "transfers": [
+  {
+   "sor": 1,
+   "ertekNap": "2023-08-03",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 1206500,
+   "kozlemeny": "KG-2023-44 sz. szla kiegy.",
+   "tranzakcioId": "MW_23873076288_0001",
+   "fajlnev": "KG_2026_44_Alppont_hálozat_létesítése.pdf",
+   "parositottSzamla": "KG-2023-44"
+  },
+  {
+   "sor": 2,
+   "ertekNap": "2023-08-31",
+   "kedvezmenyezett": "Kaldigeo Kft.",
+   "osszeg": 339090,
+   "kozlemeny": "KG-2023-46",
+   "tranzakcioId": "MW_24035209244_0001",
+   "fajlnev": "KG_2023_46_Terepi_Irodai_Mérnöknap.pdf",
+   "parositottSzamla": "KG-2023-46"
+  },
+  {
+   "sor": 3,
+   "ertekNap": "2023-09-18",
+   "kedvezmenyezett": "Útkorona Kft",
+   "osszeg": 58494732,
+   "kozlemeny": "2023/00048 sz számla",
+   "tranzakcioId": "261106654146",
+   "fajlnev": "2023_00048_1_sz__részszámla.pdf",
+   "parositottSzamla": "2023/00048"
+  },
+  {
+   "sor": 4,
+   "ertekNap": "2023-10-09",
+   "kedvezmenyezett": "RENESZÁNSZ KERTÉPÍTŐ KFT.",
+   "osszeg": 825500,
+   "kozlemeny": "REN-2023-33 sz. szla kiegy.",
+   "tranzakcioId": "MW_24271096079_0002",
+   "fajlnev": "REN_2023_33_fakivágás_munkákhoz_végteljesítés.pdf",
+   "parositottSzamla": "REN-2023-33"
+  },
+  {
+   "sor": 5,
+   "ertekNap": "2023-10-17",
+   "kedvezmenyezett": "MÉLYÉPÍTŐ LABOR Kft.",
+   "osszeg": 416941,
+   "kozlemeny": "ML03269/2023 sz. szla kiegy.",
+   "tranzakcioId": "MW_24328319563_0001",
+   "fajlnev": "Mélyépítő.pdf",
+   "parositottSzamla": "ML03269/2023"
+  },
+  {
+   "sor": 6,
+   "ertekNap": "2023-11-08",
+   "kedvezmenyezett": "Reneszánsz Kertépítő Kft.",
+   "osszeg": 387350,
+   "kozlemeny": "REN-2023-46",
+   "tranzakcioId": "MW_24450518848_0001",
+   "fajlnev": "REN_2023_46_Lencsike_utca_út_közmű_fakivágás.pdf",
+   "parositottSzamla": "REN-2023-46"
+  },
+  {
+   "sor": 7,
+   "ertekNap": "2023-11-10",
+   "kedvezmenyezett": "Útkorona Kft",
+   "osszeg": 151453853,
+   "kozlemeny": "2023/00064",
+   "tranzakcioId": "314107886903",
+   "fajlnev": "2023_00064_3_sz__részszámla.pdf",
+   "parositottSzamla": "2023/00064"
+  },
+  {
+   "sor": 8,
+   "ertekNap": "2023-11-22",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 166840515,
+   "kozlemeny": "2023/00057 sz. szla kiegy.",
+   "tranzakcioId": "326108141665",
+   "fajlnev": "2023_00057_2_sz__részszámla.pdf",
+   "parositottSzamla": "2023/00057"
+  },
+  {
+   "sor": 9,
+   "ertekNap": "2023-11-22",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 11423062,
+   "kozlemeny": "2023/00058 sz. szla kiegy.",
+   "tranzakcioId": "MW_24537944915_0002",
+   "fajlnev": "2023_00058_Végszámla.pdf",
+   "parositottSzamla": "2023/00058"
+  },
+  {
+   "sor": 10,
+   "ertekNap": "2023-11-30",
+   "kedvezmenyezett": "Útkorona Kft",
+   "osszeg": 110863394,
+   "kozlemeny": "2023/00083",
+   "tranzakcioId": "334108373928",
+   "fajlnev": "2023_00083_4_sz__részszámla.pdf",
+   "parositottSzamla": "2023/00083"
+  },
+  {
+   "sor": 11,
+   "ertekNap": "2023-12-08",
+   "kedvezmenyezett": "Hexagon-Vill Kft",
+   "osszeg": 27378011,
+   "kozlemeny": "EINV000000343",
+   "tranzakcioId": "342108573215",
+   "fajlnev": "EINV000000343_Villamosipari_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000343"
+  },
+  {
+   "sor": 12,
+   "ertekNap": "2023-12-15",
+   "kedvezmenyezett": "Útkorona Kft",
+   "osszeg": 102976258,
+   "kozlemeny": "2023/00105",
+   "tranzakcioId": "349108735254",
+   "fajlnev": "2023_00105_5_sz__részszámla.pdf",
+   "parositottSzamla": "2023/00105"
+  },
+  {
+   "sor": 13,
+   "ertekNap": "2024-01-10",
+   "kedvezmenyezett": "Hexagon-Vill Kft.",
+   "osszeg": 32464259,
+   "kozlemeny": "EINV000000353",
+   "tranzakcioId": "010109257477",
+   "fajlnev": "EINV000000353_Villamos_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000353"
+  },
+  {
+   "sor": 14,
+   "ertekNap": "2024-01-26",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 3206000,
+   "kozlemeny": "EINV000000352 sz. szla kiegy.",
+   "tranzakcioId": "MW_24933620208_0003",
+   "fajlnev": "EINV000000352_Villamos_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000352"
+  },
+  {
+   "sor": 15,
+   "ertekNap": "2024-01-26",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 13261111,
+   "kozlemeny": "EINV000000355 sz. szla kiegy.",
+   "tranzakcioId": "MW_24933620208_0002",
+   "fajlnev": "EINV000000355_Családiház_villamos_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000355"
+  },
+  {
+   "sor": 16,
+   "ertekNap": "2024-02-28",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 3160727,
+   "kozlemeny": "2024/00009 sz. szla kiegy.",
+   "tranzakcioId": "MW_25129682020_0004",
+   "fajlnev": "2024_00009_6_sz__részszámla.pdf",
+   "parositottSzamla": "2024/00009"
+  },
+  {
+   "sor": 17,
+   "ertekNap": "2024-03-07",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 14543852,
+   "kozlemeny": "EINV000000363 sz. szla kiegy.",
+   "tranzakcioId": "MW_25184951956_0003",
+   "fajlnev": "EINV000000363_Villamos_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000363"
+  },
+  {
+   "sor": 18,
+   "ertekNap": "2024-03-07",
+   "kedvezmenyezett": "RENESZÁNSZ KERTÉPÍTŐ KFT.",
+   "osszeg": 1498600,
+   "kozlemeny": "REN-2024-2 sz. szla kiegy.",
+   "tranzakcioId": "MW_25184951956_0005",
+   "fajlnev": "REN_2024_2.pdf",
+   "parositottSzamla": "REN-2023-63"
+  },
+  {
+   "sor": 19,
+   "ertekNap": "2024-03-14",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 29660302,
+   "kozlemeny": "2024/00010 sz. szla kiegy.",
+   "tranzakcioId": "074100672042",
+   "fajlnev": "2024_00010_7__sz__részszámla.pdf",
+   "parositottSzamla": "2024/00010"
+  },
+  {
+   "sor": 20,
+   "ertekNap": "2024-04-12",
+   "kedvezmenyezett": "Kaldigeo Kft.",
+   "osszeg": 419100,
+   "kozlemeny": "KG-2024-14",
+   "tranzakcioId": "MW_25407555104_0001",
+   "fajlnev": "KG_2024_32_Terepi_Irodai_Mérnöknap.pdf",
+   "parositottSzamla": "KG-2024-32"
+  },
+  {
+   "sor": 21,
+   "ertekNap": "2024-04-24",
+   "kedvezmenyezett": "Hexagon-Vill Kft.",
+   "osszeg": 5559856,
+   "kozlemeny": "EINV000000365",
+   "tranzakcioId": "MW_25479023661_0001",
+   "fajlnev": "EINV000000365_Villamos_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000365"
+  },
+  {
+   "sor": 22,
+   "ertekNap": "2024-04-24",
+   "kedvezmenyezett": "Hexagon-Vill Kft.",
+   "osszeg": 563880,
+   "kozlemeny": "EINV000000366",
+   "tranzakcioId": "MW_25479023661_0002",
+   "fajlnev": "EINV000000366_Védő_csövezés_optikának_Hexagon.pdf",
+   "parositottSzamla": "EINV000000366"
+  },
+  {
+   "sor": 23,
+   "ertekNap": "2024-05-03",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 56441388,
+   "kozlemeny": "2024/00016 sz. szla kiegy.",
+   "tranzakcioId": "524116014233",
+   "fajlnev": "2024_00016_8__sz__részszámla.pdf",
+   "parositottSzamla": "2024/00016"
+  },
+  {
+   "sor": 24,
+   "ertekNap": "2024-06-06",
+   "kedvezmenyezett": "Útkorona Kft",
+   "osszeg": 9870181,
+   "kozlemeny": "2024/00022",
+   "tranzakcioId": "MW_25754765102_0002",
+   "fajlnev": "2024_00022_9_sz__részszámla.pdf",
+   "parositottSzamla": "2024/00022"
+  },
+  {
+   "sor": 25,
+   "ertekNap": "2024-06-06",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 6300000,
+   "kozlemeny": "EINV000000375 sz. szla kiegy.",
+   "tranzakcioId": "MW_25754732878_0005",
+   "fajlnev": "EINV000000375_Fogyasztásmérő_elosztók_szerelése_Hexagon.pdf",
+   "parositottSzamla": "EINV000000375"
+  },
+  {
+   "sor": 26,
+   "ertekNap": "2024-06-12",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 4217056,
+   "kozlemeny": "EINV000000378 sz. szla kiegy.",
+   "tranzakcioId": "MW_25801187425_0002",
+   "fajlnev": "EINV000000378_Villamos_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000378"
+  },
+  {
+   "sor": 27,
+   "ertekNap": "2024-06-19",
+   "kedvezmenyezett": "Kaldigeo Kft.",
+   "osszeg": 209550,
+   "kozlemeny": "KG-2024-34",
+   "tranzakcioId": "MW_25847148057_0001",
+   "fajlnev": "KG_2024_34_Terepi_Irodai_Mérnöknap.pdf",
+   "parositottSzamla": "KG-2024-34"
+  },
+  {
+   "sor": 28,
+   "ertekNap": "2024-06-20",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 27189000,
+   "kozlemeny": "EINV000000379 sz. szla kiegy.",
+   "tranzakcioId": "172103018262",
+   "fajlnev": "EINV000000379_Palotaliget_csatlakozó_elosztók_Hexagon.pdf",
+   "parositottSzamla": "EINV000000379"
+  },
+  {
+   "sor": 29,
+   "ertekNap": "2024-06-20",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 33390000,
+   "kozlemeny": "EINV000000380 sz. szla kiegy.",
+   "tranzakcioId": "172103018257",
+   "fajlnev": "EINV000000380_Palotaliget_fogyasztásmérő_elosztók_Hexagon.pdf",
+   "parositottSzamla": "EINV000000380"
+  },
+  {
+   "sor": 30,
+   "ertekNap": "2024-10-30",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 209550,
+   "kozlemeny": "KG-2024-71 sz. szla kiegy.",
+   "tranzakcioId": "MW_26687011695_0005",
+   "fajlnev": "KG_2024_71_Terepi_Irodai_Mérnöknap.pdf",
+   "parositottSzamla": "KG-2024-71"
+  },
+  {
+   "sor": 31,
+   "ertekNap": "2024-10-30",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 494030,
+   "kozlemeny": "KG-2024-73 sz. szla kiegy.",
+   "tranzakcioId": "MW_26687025799_0002",
+   "fajlnev": "KG_2024_73_Terepi_Irodai_Mérnöknap.pdf",
+   "parositottSzamla": "KG-2024-73"
+  },
+  {
+   "sor": 32,
+   "ertekNap": "2024-10-30",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 444500,
+   "kozlemeny": "KG-2024-75 sz. szla kiegy.",
+   "tranzakcioId": "MW_26687025799_0003",
+   "fajlnev": "KG_2024_75_Használati_megosztási_rajzok_készítése_tervek_alapján.pdf",
+   "parositottSzamla": "KG-2024-75"
+  },
+  {
+   "sor": 33,
+   "ertekNap": "2024-12-17",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 12159375,
+   "kozlemeny": "2024/00075 sz. szla kiegy.",
+   "tranzakcioId": "MW_27033337768_0010",
+   "fajlnev": "2024_00075_10_sz__részszámla.pdf",
+   "parositottSzamla": "2024/00075"
+  },
+  {
+   "sor": 34,
+   "ertekNap": "2025-01-14",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 4541012,
+   "kozlemeny": "KG-2024-95 sz. szla kiegy.",
+   "tranzakcioId": "MW_27204751135_0005",
+   "fajlnev": "KG_2024_95_Épületefeltüntetési_földmérési_dokumentáció_készítése.pdf",
+   "parositottSzamla": "KG-2024-95"
+  },
+  {
+   "sor": 35,
+   "ertekNap": "2025-02-18",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 364490,
+   "kozlemeny": "KG-2025-9 sz. szla kiegy.",
+   "tranzakcioId": "MW_27467762651_0007",
+   "fajlnev": "KG_2025_9_Geodéziai_felmérések.pdf",
+   "parositottSzamla": "KG-2025-9"
+  },
+  {
+   "sor": 36,
+   "ertekNap": "2025-02-27",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 445770,
+   "kozlemeny": "KG-2025-6 sz. szla kiegy.",
+   "tranzakcioId": "MW_27529373242_0003",
+   "fajlnev": "KG_2025_6_Közmű_és_útépítési_munkák.pdf",
+   "parositottSzamla": "KG-2025-6"
+  },
+  {
+   "sor": 37,
+   "ertekNap": "2025-03-03",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 23129425,
+   "kozlemeny": "EINV000000416 sz. szla kiegy.",
+   "tranzakcioId": "062102014487",
+   "fajlnev": "EINV000000416_Villamos_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000416"
+  },
+  {
+   "sor": 38,
+   "ertekNap": "2025-03-11",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 1905000,
+   "kozlemeny": "EINV000000418 sz. szla kiegy.",
+   "tranzakcioId": "MW_27622324633_0001",
+   "fajlnev": "EINV000000418_Palotaliget_fogyasztásmérő_elosztók_tervezése_Hexagon.pdf",
+   "parositottSzamla": "EINV000000418"
+  },
+  {
+   "sor": 39,
+   "ertekNap": "2025-03-28",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 571500,
+   "kozlemeny": "KG-2025-20 sz. szla kiegy.",
+   "tranzakcioId": "MW_27749549214_0001",
+   "fajlnev": "KG_2025_20_Előzetes_vázrajz_Használati_megosztás.pdf",
+   "parositottSzamla": "KG-2025-20"
+  },
+  {
+   "sor": 40,
+   "ertekNap": "2025-04-24",
+   "kedvezmenyezett": "VIRABEL Kft.",
+   "osszeg": 11011286,
+   "kozlemeny": "25-00/00388 sz. szla kiegy.",
+   "tranzakcioId": "MW_27958248303_0007",
+   "fajlnev": "250000388_Virabel_földmunka.pdf",
+   "parositottSzamla": "25-00/00388"
+  },
+  {
+   "sor": 41,
+   "ertekNap": "2025-04-24",
+   "kedvezmenyezett": "Hexagon-Vill Szolgáltató és Kere",
+   "osszeg": 12633333,
+   "kozlemeny": "EINV000000425 sz. szla kiegy.",
+   "tranzakcioId": "MW_27958248303_0001",
+   "fajlnev": "EINV000000425_Villamosipari_kivitelezés_Hexagon.pdf",
+   "parositottSzamla": "EINV000000425"
+  },
+  {
+   "sor": 42,
+   "ertekNap": "2025-05-09",
+   "kedvezmenyezett": "ELEK DÍSZFAISKOLA Kft.",
+   "osszeg": 10239383,
+   "kozlemeny": "000036/2025 sz. szla kiegy.",
+   "tranzakcioId": "MW_28067033154_0002",
+   "fajlnev": "szamla_36_2025.pdf",
+   "parositottSzamla": "000036/2025"
+  },
+  {
+   "sor": 43,
+   "ertekNap": "2025-06-24",
+   "kedvezmenyezett": "KaldiGeo Kft.",
+   "osszeg": 339090,
+   "kozlemeny": "KG-2025-41 sz. szla kiegy.",
+   "tranzakcioId": "MW_28393485938_0001",
+   "fajlnev": "KG_2025_41_Helyszíni_kiszállás.pdf",
+   "parositottSzamla": "KG-2025-41"
+  },
+  {
+   "sor": 44,
+   "ertekNap": "2025-07-03",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 20306989,
+   "kozlemeny": "2025/00024 sz. szla kiegy.",
+   "tranzakcioId": "184106568960",
+   "fajlnev": "2025_00024_Végszámla.pdf",
+   "parositottSzamla": "2025/00024"
+  },
+  {
+   "sor": 45,
+   "ertekNap": "2025-11-12",
+   "kedvezmenyezett": "ELEK DÍSZFAISKOLA Kft.",
+   "osszeg": 337505,
+   "kozlemeny": "000101/2025 sz. szla kiegy.",
+   "tranzakcioId": "MW_29399090045_0001",
+   "fajlnev": "szamla_101_2025.pdf",
+   "parositottSzamla": "000101/2025"
+  },
+  {
+   "sor": 46,
+   "ertekNap": "2026-01-08",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 64123017,
+   "kozlemeny": "2025/00067 sz. szla kiegy.",
+   "tranzakcioId": "008103290720",
+   "fajlnev": "2025_00067_11_sz__részszámla.pdf",
+   "parositottSzamla": "2025/00067"
+  },
+  {
+   "sor": 47,
+   "ertekNap": "2026-02-06",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 81035637,
+   "kozlemeny": "2026/00003 sz. szla kiegy.",
+   "tranzakcioId": "037104270085",
+   "fajlnev": "2026_00003_12_sz__részszámla.pdf",
+   "parositottSzamla": "2026/00003"
+  },
+  {
+   "sor": 48,
+   "ertekNap": "2026-03-25",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 14839738,
+   "kozlemeny": "2026/00006 sz. szla kiegy.",
+   "tranzakcioId": "MW_30290631568_0001",
+   "fajlnev": "2026_00006_13__sz__részszámla.pdf",
+   "parositottSzamla": "2026/00006"
+  },
+  {
+   "sor": 49,
+   "ertekNap": "2026-05-08",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 103160295,
+   "kozlemeny": "2026/00009 sz. szla kiegy.",
+   "tranzakcioId": "128107457551",
+   "fajlnev": "2026_00009_14_sz__részszámla.pdf",
+   "parositottSzamla": "2026/00009"
+  },
+  {
+   "sor": 50,
+   "ertekNap": "2026-05-22",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 81323953,
+   "kozlemeny": "2026/00014 sz. szla kiegy.",
+   "tranzakcioId": "142107949582",
+   "fajlnev": "2026_00014_15__sz__részszámla.pdf",
+   "parositottSzamla": "2026/00014"
+  },
+  {
+   "sor": 51,
+   "ertekNap": "2026-05-22",
+   "kedvezmenyezett": "ELEK DÍSZFAISKOLA Kft.",
+   "osszeg": 5531077,
+   "kozlemeny": "000023/2026 sz. szla kiegy.",
+   "tranzakcioId": "MW_30649666746_0001",
+   "fajlnev": "2__reszszámla_23_2026.pdf",
+   "parositottSzamla": "000023/2026"
+  },
+  {
+   "sor": 52,
+   "ertekNap": "2026-07-16",
+   "kedvezmenyezett": "ÚTKORONA Kft.",
+   "osszeg": 89265364,
+   "kozlemeny": "2026/00032 sz. szla kiegy.",
+   "tranzakcioId": "197100007169",
+   "fajlnev": "2026_00032_Végszámla.pdf",
+   "parositottSzamla": "2026/00032"
+  },
+  {
+   "sor": 53,
+   "ertekNap": "2026-07-24",
+   "kedvezmenyezett": "Elek Díszfaiskola Kft",
+   "osszeg": 9121323,
+   "kozlemeny": "000043/2026",
+   "tranzakcioId": "MW_31037944632_0001",
+   "fajlnev": "3__rész_fatelepítés_43_2026.pdf",
+   "parositottSzamla": "000043/2026"
+  }
+ ],
+ "previousSettlement": [
+  {
+   "sor": 1,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00048",
+   "tipus": "Részszámla (1. sz.)",
+   "teljesites": "2023-07-31",
+   "netto": 64994146,
+   "fizetendo": 58494732,
+   "utalt": 58494732,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 58494731.4,
+   "palotaligetResz": 4621083.78,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 2,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00057",
+   "tipus": "Részszámla (2. sz.)",
+   "teljesites": "2023-08-31",
+   "netto": 185378351,
+   "fizetendo": 166840515,
+   "utalt": 166840515,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 166840515.9,
+   "palotaligetResz": 13180400.76,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 3,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00058",
+   "tipus": "Végszámla",
+   "teljesites": "2023-08-31",
+   "netto": 8994537,
+   "fizetendo": 11423062,
+   "utalt": 11423062,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 4,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00064",
+   "tipus": "Részszámla (3. sz.)",
+   "teljesites": "2023-09-30",
+   "netto": 168282059,
+   "fizetendo": 151453853,
+   "utalt": 151453853,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 151453853.1,
+   "palotaligetResz": 11964854.39,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 5,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00083",
+   "tipus": "Részszámla (4. sz.)",
+   "teljesites": "2023-10-31",
+   "netto": 123181548,
+   "fizetendo": 110863394,
+   "utalt": 110863394,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 110863393.2,
+   "palotaligetResz": 8758208.06,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 6,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2023/00105",
+   "tipus": "Részszámla (5. sz.)",
+   "teljesites": "2023-11-30",
+   "netto": 114418064,
+   "fizetendo": 102976258,
+   "utalt": 102976258,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 102976257.6,
+   "palotaligetResz": 8135124.35,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 7,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00009",
+   "tipus": "Részszámla (6. sz.)",
+   "teljesites": "2024-01-31",
+   "netto": 3511919,
+   "fizetendo": 3160727,
+   "utalt": 3160727,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 3160727.1,
+   "palotaligetResz": 249697.44,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 8,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00010",
+   "tipus": "Részszámla (7. sz.)",
+   "teljesites": "2024-02-29",
+   "netto": 32955892,
+   "fizetendo": 29660302,
+   "utalt": 29660302,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 29660302.8,
+   "palotaligetResz": 2343163.92,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 9,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00016",
+   "tipus": "Részszámla (8. sz.)",
+   "teljesites": "2024-03-31",
+   "netto": 62712654,
+   "fizetendo": 56441388,
+   "utalt": 56441388,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 56441388.6,
+   "palotaligetResz": 4458869.7,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 10,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00022",
+   "tipus": "Részszámla (9. sz.)",
+   "teljesites": "2024-04-30",
+   "netto": 10966867,
+   "fizetendo": 9870181,
+   "utalt": 9870181,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 9870180.3,
+   "palotaligetResz": 779744.24,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 11,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2024/00075",
+   "tipus": "Részszámla (10. sz.)",
+   "teljesites": "2024-11-20",
+   "netto": 13510417,
+   "fizetendo": 12159375,
+   "utalt": 12159375,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 12159375.3,
+   "palotaligetResz": 960590.65,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 12,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2025/00024",
+   "tipus": "Végszámla",
+   "teljesites": "2025-06-06",
+   "netto": 15989755,
+   "fizetendo": 20306989,
+   "utalt": 20306989,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 13,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2025/00067",
+   "tipus": "Részszámla (11. sz.)",
+   "teljesites": "2025-11-30",
+   "netto": 71247797,
+   "fizetendo": 64123017,
+   "utalt": 64123017,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 14,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00003",
+   "tipus": "Részszámla (12. sz.)",
+   "teljesites": "2025-12-31",
+   "netto": 90039597,
+   "fizetendo": 81035637,
+   "utalt": 81035637,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 15,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00006",
+   "tipus": "Részszámla (13. sz.)",
+   "teljesites": "2026-02-28",
+   "netto": 16488598,
+   "fizetendo": 14839738,
+   "utalt": 14839738,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 16,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00009",
+   "tipus": "Részszámla (14. sz.)",
+   "teljesites": "2026-03-31",
+   "netto": 114622549,
+   "fizetendo": 103160295,
+   "utalt": 103160295,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 17,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00014",
+   "tipus": "Részszámla (15. sz.)",
+   "teljesites": "2026-04-30",
+   "netto": 90359947,
+   "fizetendo": 81323953,
+   "utalt": 81323953,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 18,
+   "szallito": "Útkorona Kft.",
+   "szamlaszam": "2026/00032",
+   "tipus": "Végszámla",
+   "teljesites": "2026-06-19",
+   "netto": 55879206,
+   "fizetendo": 89265364,
+   "utalt": 89265364,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 19,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000343",
+   "tipus": "Számla",
+   "teljesites": "2023-11-06",
+   "netto": 32209425,
+   "fizetendo": 27378011,
+   "utalt": 27378011,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 27378011.25,
+   "palotaligetResz": 2162862.89,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 20,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000352",
+   "tipus": "Számla",
+   "teljesites": "2023-12-16",
+   "netto": 3206000,
+   "fizetendo": 3206000,
+   "utalt": 3206000,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 21,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000353",
+   "tipus": "Számla",
+   "teljesites": "2023-12-16",
+   "netto": 36071399,
+   "fizetendo": 32464259,
+   "utalt": 32464259,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 32464259.1,
+   "palotaligetResz": 2564676.47,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 22,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000355",
+   "tipus": "Számla",
+   "teljesites": "2023-12-31",
+   "netto": 15601307,
+   "fizetendo": 13261111,
+   "utalt": 13261111,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 13261110.95,
+   "palotaligetResz": 1047627.77,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 23,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000363",
+   "tipus": "Számla",
+   "teljesites": "2024-02-05",
+   "netto": 17110414,
+   "fizetendo": 15399373,
+   "utalt": 14543852,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 14543851.9,
+   "palotaligetResz": 1148964.3,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 24,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000365",
+   "tipus": "Számla",
+   "teljesites": "2024-03-24",
+   "netto": 6541007,
+   "fizetendo": 5559856,
+   "utalt": 5559856,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 5559855.95,
+   "palotaligetResz": 439228.62,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 25,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000366",
+   "tipus": "Számla",
+   "teljesites": "2024-03-27",
+   "netto": 444000,
+   "fizetendo": 563880,
+   "utalt": 563880,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 26,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000375",
+   "tipus": "Számla",
+   "teljesites": "2024-05-09",
+   "netto": 7000000,
+   "fizetendo": 6300000,
+   "utalt": 6300000,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 27,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000378",
+   "tipus": "Számla",
+   "teljesites": "2024-05-28",
+   "netto": 4961242,
+   "fizetendo": 4217056,
+   "utalt": 4217056,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 4217055.7,
+   "palotaligetResz": 333147.4,
+   "palotaligetAfa": 0,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 28,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000379",
+   "tipus": "Számla",
+   "teljesites": "2024-06-05",
+   "netto": 28620000,
+   "fizetendo": 27189000,
+   "utalt": 27189000,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 0,
+   "palotaligetResz": 0,
+   "palotaligetAfa": 0,
+   "megjegyzes": "Szerepel a részelszámolásban, de 0 Ft-tal: „Nem kell / arányosítva lett”",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 29,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000380",
+   "tipus": "Számla",
+   "teljesites": "2024-06-05",
+   "netto": 37100000,
+   "fizetendo": 33390000,
+   "utalt": 33390000,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 30,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000416",
+   "tipus": "Számla",
+   "teljesites": "2025-01-20",
+   "netto": 12505206,
+   "fizetendo": 12505206,
+   "utalt": 23129425,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 12505206,
+   "palotaligetResz": 987911.27,
+   "palotaligetAfa": 0,
+   "megjegyzes": "OCR-ből származó összeg – ellenőrizendő",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 31,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000418",
+   "tipus": "Számla",
+   "teljesites": "2025-02-14",
+   "netto": 1500000,
+   "fizetendo": 1905000,
+   "utalt": 1905000,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 32,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000425",
+   "tipus": "Számla",
+   "teljesites": "2025-03-20",
+   "netto": 10977193,
+   "fizetendo": 10977193,
+   "utalt": 12633333,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 33,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000496",
+   "tipus": "Számla",
+   "teljesites": "2026-07-02",
+   "netto": 1446383,
+   "fizetendo": 1836906,
+   "utalt": null,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 34,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2023-44",
+   "tipus": "Számla",
+   "teljesites": "2023-07-07",
+   "netto": 950000,
+   "fizetendo": 1206500,
+   "utalt": 1206500,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 35,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2023-46",
+   "tipus": "Számla",
+   "teljesites": "2023-07-31",
+   "netto": 267000,
+   "fizetendo": 339090,
+   "utalt": 339090,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 36,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-32",
+   "tipus": "Számla",
+   "teljesites": "2024-03-14",
+   "netto": 330000,
+   "fizetendo": 419100,
+   "utalt": 419100,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 37,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-34",
+   "tipus": "Számla",
+   "teljesites": "2024-04-30",
+   "netto": 165000,
+   "fizetendo": 209550,
+   "utalt": 209550,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 38,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-71",
+   "tipus": "Számla",
+   "teljesites": "2024-09-30",
+   "netto": 165000,
+   "fizetendo": 209550,
+   "utalt": 209550,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 39,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-73",
+   "tipus": "Számla",
+   "teljesites": "2024-09-23",
+   "netto": 389000,
+   "fizetendo": 494030,
+   "utalt": 494030,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 40,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-75",
+   "tipus": "Számla",
+   "teljesites": "2024-09-25",
+   "netto": 350000,
+   "fizetendo": 444500,
+   "utalt": 444500,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 41,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2024-95",
+   "tipus": "Számla",
+   "teljesites": "2024-11-30",
+   "netto": 3575600,
+   "fizetendo": 4541012,
+   "utalt": 4541012,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 42,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-6",
+   "tipus": "Számla",
+   "teljesites": "2025-01-21",
+   "netto": 351000,
+   "fizetendo": 445770,
+   "utalt": 445770,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 43,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-9",
+   "tipus": "Számla",
+   "teljesites": "2025-01-31",
+   "netto": 287000,
+   "fizetendo": 364490,
+   "utalt": 364490,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 44,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-10",
+   "tipus": "Módosító számla (KG-2025-9-hez)",
+   "teljesites": "2025-01-31",
+   "netto": 0,
+   "fizetendo": 0,
+   "utalt": null,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "Sztornó / 0 Ft-os módosító – elszámolás tárgya nem lehet",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 45,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-20",
+   "tipus": "Számla",
+   "teljesites": "2025-03-10",
+   "netto": 450000,
+   "fizetendo": 571500,
+   "utalt": 571500,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 46,
+   "szallito": "KáldiGeo Kft.",
+   "szamlaszam": "KG-2025-41",
+   "tipus": "Számla",
+   "teljesites": "2025-05-31",
+   "netto": 267000,
+   "fizetendo": 339090,
+   "utalt": 339090,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 47,
+   "szallito": "Reneszánsz Kertépítő Kft.",
+   "szamlaszam": "REN-2023-33",
+   "tipus": "Végszámla",
+   "teljesites": "2023-09-11",
+   "netto": 650000,
+   "fizetendo": 825500,
+   "utalt": 825500,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 650000,
+   "palotaligetResz": 51350,
+   "palotaligetAfa": 13864.5,
+   "megjegyzes": "A forrásban REN-2023/33",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 48,
+   "szallito": "Reneszánsz Kertépítő Kft.",
+   "szamlaszam": "REN-2023-46",
+   "tipus": "Végszámla",
+   "teljesites": "2023-10-18",
+   "netto": 305000,
+   "fizetendo": 387350,
+   "utalt": 387350,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 305000,
+   "palotaligetResz": 24095,
+   "palotaligetAfa": 6505.65,
+   "megjegyzes": "A forrásban REN-2023/46",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 49,
+   "szallito": "Reneszánsz Kertépítő Kft.",
+   "szamlaszam": "REN-2023-63",
+   "tipus": "Végszámla",
+   "teljesites": "2023-12-31",
+   "netto": 1180000,
+   "fizetendo": 1498600,
+   "utalt": 1498600,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 1180000,
+   "palotaligetResz": 93220,
+   "palotaligetAfa": 25169.4,
+   "megjegyzes": "A forrásban REN-2023/63",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 50,
+   "szallito": "Reneszánsz Kertépítő Kft.",
+   "szamlaszam": "REN-2024-2",
+   "tipus": "Módosító számla (REN-2023-63-hoz)",
+   "teljesites": "2023-12-31",
+   "netto": 0,
+   "fizetendo": 0,
+   "utalt": null,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "Sztornó / 0 Ft-os módosító – elszámolás tárgya nem lehet",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 51,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000036/2025",
+   "tipus": "Részszámla (1. sz.)",
+   "teljesites": "2025-04-04",
+   "netto": 9420912,
+   "fizetendo": 10239383,
+   "utalt": 10239383,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 9420912,
+   "palotaligetResz": 744252.05,
+   "palotaligetAfa": 200948.11,
+   "megjegyzes": "Visszatartás 10% (1 725 175 Ft) az utalásból levonva",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 52,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000101/2025",
+   "tipus": "Számla",
+   "teljesites": "2025-09-23",
+   "netto": 265752,
+   "fizetendo": 337505,
+   "utalt": 337505,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 53,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000023/2026",
+   "tipus": "Részszámla (2. sz.)",
+   "teljesites": "2026-04-30",
+   "netto": 5412015,
+   "fizetendo": 5531077,
+   "utalt": 5531077,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 54,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000043/2026",
+   "tipus": "Részszámla (3. sz.)",
+   "teljesites": "2026-07-15",
+   "netto": 8031750,
+   "fizetendo": 9121323,
+   "utalt": 9121323,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "A korábbi részelszámolás nem tartalmazza",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 55,
+   "szallito": "Virabel Kft.",
+   "szamlaszam": "25-00/00372",
+   "tipus": "Számla (sztornózva)",
+   "teljesites": "2025-03-28",
+   "netto": 8670304,
+   "fizetendo": 8670304,
+   "utalt": null,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "Sztornó / 0 Ft-os módosító – elszámolás tárgya nem lehet",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 56,
+   "szallito": "Virabel Kft.",
+   "szamlaszam": "25-00/00387",
+   "tipus": "Érvénytelenítő (sztornó) számla",
+   "teljesites": "2025-03-28",
+   "netto": -8670304,
+   "fizetendo": -8670304,
+   "utalt": null,
+   "elszamolva": "NEM – még nem",
+   "elszamolasAlapja": null,
+   "palotaligetResz": null,
+   "palotaligetAfa": null,
+   "megjegyzes": "Sztornó / 0 Ft-os módosító – elszámolás tárgya nem lehet",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 57,
+   "szallito": "Virabel Kft.",
+   "szamlaszam": "25-00/00388",
+   "tipus": "Számla",
+   "teljesites": "2025-03-28",
+   "netto": 8670304,
+   "fizetendo": 11011286,
+   "utalt": 11011286,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 8670304,
+   "palotaligetResz": 684954.02,
+   "palotaligetAfa": 184937.58,
+   "megjegyzes": null,
+   "csakKorabbiban": false
+  },
+  {
+   "sor": 58,
+   "szallito": "Mélyépítő Labor Kft.",
+   "szamlaszam": "ML03269/2023",
+   "tipus": "Végszámla",
+   "teljesites": "2023-09-11",
+   "netto": 328300,
+   "fizetendo": 416941,
+   "utalt": 416941,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 328300,
+   "palotaligetResz": 25935.7,
+   "palotaligetAfa": 7002.64,
+   "megjegyzes": "A forrásban megjegyzés: nincs benne az összesítőben",
+   "csakKorabbiban": false
+  },
+  {
+   "sor": null,
+   "szallito": "Elek Díszfaiskola Kft.",
+   "szamlaszam": "000028/2024",
+   "tipus": "Számla (fásítási előleg)",
+   "teljesites": "2024-04-18",
+   "netto": 26695823,
+   "fizetendo": 33903695,
+   "utalt": null,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 26695823,
+   "palotaligetResz": 2108970.02,
+   "palotaligetAfa": 569421.89,
+   "megjegyzes": "NINCS a mostani számlaanyagban – a fásítási munkák előlegszámlája",
+   "csakKorabbiban": true
+  },
+  {
+   "sor": null,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000407",
+   "tipus": "Számla",
+   "teljesites": "2025-01-20",
+   "netto": 23129425,
+   "fizetendo": 23129425,
+   "utalt": null,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 23129425,
+   "palotaligetResz": 1827224.58,
+   "palotaligetAfa": 0,
+   "megjegyzes": "NINCS a mostani számlaanyagban. A 23 129 425 Ft-os banki utalás összege ezzel egyezik, nem a 416-ossal!",
+   "csakKorabbiban": true
+  },
+  {
+   "sor": null,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "EINV000000415",
+   "tipus": "Érvénytelenítő (sztornó)",
+   "teljesites": "2025-01-20",
+   "netto": -23129425,
+   "fizetendo": -23129425,
+   "utalt": null,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": -23129425,
+   "palotaligetResz": -1827224.58,
+   "palotaligetAfa": 0,
+   "megjegyzes": "NINCS a mostani számlaanyagban – az EINV000000407 sztornója",
+   "csakKorabbiban": true
+  },
+  {
+   "sor": null,
+   "szallito": "Hexagon-Vill Kft.",
+   "szamlaszam": "(nincs számlaszám)",
+   "tipus": "Csatlakozószekrények",
+   "teljesites": null,
+   "netto": 7420000,
+   "fizetendo": 9423400,
+   "utalt": null,
+   "elszamolva": "IGEN – elszámolva",
+   "elszamolasAlapja": 6106660,
+   "palotaligetResz": 6106660,
+   "palotaligetAfa": 0,
+   "megjegyzes": "A részelszámolásban „Erre nincsen számla” megjegyzéssel szerepel",
+   "csakKorabbiban": true
+  }
+ ],
+ "suppliers": [
+  {
+   "nev": "Útkorona Kft.",
+   "szamlakDb": 18,
+   "nettoOsszesen": 1243533903,
+   "fizetendoOsszesen": 1167398780,
+   "utaltOsszeg": 1167398780,
+   "korabbanElszamoltDb": 10,
+   "korabbanElszamoltAlap": 701920725.3,
+   "palotaligetResz": 55451737.29,
+   "megNemSzamoltNetto": 463621986
+  },
+  {
+   "nev": "Hexagon-Vill Kft.",
+   "szamlakDb": 18,
+   "nettoOsszesen": 222713576,
+   "fizetendoOsszesen": 205576251,
+   "utaltOsszeg": 205740783,
+   "korabbanElszamoltDb": 11,
+   "korabbanElszamoltAlap": 116036010.85,
+   "palotaligetResz": 14791078.72,
+   "megNemSzamoltNetto": 61673576
+  },
+  {
+   "nev": "KáldiGeo Kft.",
+   "szamlakDb": 13,
+   "nettoOsszesen": 7546600,
+   "fizetendoOsszesen": 9584182,
+   "utaltOsszeg": 9584182,
+   "korabbanElszamoltDb": 0,
+   "korabbanElszamoltAlap": 0,
+   "palotaligetResz": 0,
+   "megNemSzamoltNetto": 7546600
+  },
+  {
+   "nev": "Reneszánsz Kertépítő Kft.",
+   "szamlakDb": 4,
+   "nettoOsszesen": 2135000,
+   "fizetendoOsszesen": 2711450,
+   "utaltOsszeg": 2711450,
+   "korabbanElszamoltDb": 3,
+   "korabbanElszamoltAlap": 2135000,
+   "palotaligetResz": 168665,
+   "megNemSzamoltNetto": 0
+  },
+  {
+   "nev": "Elek Díszfaiskola Kft.",
+   "szamlakDb": 5,
+   "nettoOsszesen": 49826252,
+   "fizetendoOsszesen": 59132983,
+   "utaltOsszeg": 25229288,
+   "korabbanElszamoltDb": 2,
+   "korabbanElszamoltAlap": 36116735,
+   "palotaligetResz": 2853222.07,
+   "megNemSzamoltNetto": 13709517
+  },
+  {
+   "nev": "Virabel Kft.",
+   "szamlakDb": 3,
+   "nettoOsszesen": 8670304,
+   "fizetendoOsszesen": 11011286,
+   "utaltOsszeg": 11011286,
+   "korabbanElszamoltDb": 1,
+   "korabbanElszamoltAlap": 8670304,
+   "palotaligetResz": 684954.02,
+   "megNemSzamoltNetto": 0
+  },
+  {
+   "nev": "Mélyépítő Labor Kft.",
+   "szamlakDb": 1,
+   "nettoOsszesen": 328300,
+   "fizetendoOsszesen": 416941,
+   "utaltOsszeg": 416941,
+   "korabbanElszamoltDb": 1,
+   "korabbanElszamoltAlap": 328300,
+   "palotaligetResz": 25935.7,
+   "megNemSzamoltNetto": 0
+  }
+ ],
+ "supplierNotes": [
+  "• A korábbi részelszámolás (2025.08.08.) 7,9%-os Palotaliget-részaránnyal számolt.",
+  "• Az Útkorona-tételeknél az elszámolás alapja a visszatartásokkal csökkentett fizetendő összeg, a többi szállítónál a nettó/bruttó számlaérték.",
+  "• A 2023/00058 (Útkorona végszámla) a részelszámolás „kapott” lapján saját költségként, 0 Ft Palotaliget-résszel szerepel – itt NEM elszámoltként jelöltem.",
+  "• Az EINV000000379 szerepel a részelszámolásban, de 0 Ft-tal („Nem kell / arányosítva lett”).",
+  "• Négy tétel csak a részelszámolásban szerepel, számla nincs róla a mostani anyagban: 000028/2024, EINV000000407, EINV000000415, valamint egy számla nélküli csatlakozószekrény-tétel."
+ ],
+ "meta": {
+  "title": "Számlák és banki utalások egyeztetése – Palotaliget / XV. kerületi út- és közműfejlesztés",
+  "generated": "2026-08-12",
+  "source": "Szamla_utalas_egyeztetes Palota_Indotek 2026jul31 elszámoláshoz.xlsx"
+ }
+};
+</script>
+<script>
+(function(){
+"use strict";
+
+/* ============================ helpers ============================ */
+const $ = (sel,root)=> (root||document).querySelector(sel);
+const $$ = (sel,root)=> Array.from((root||document).querySelectorAll(sel));
+const el = (tag,attrs,children)=>{
+  const n = document.createElement(tag);
+  if(attrs) for(const k in attrs){
+    if(k==='class') n.className = attrs[k];
+    else if(k==='html') n.innerHTML = attrs[k];
+    else if(k.startsWith('on')) n.addEventListener(k.slice(2), attrs[k]);
+    else n.setAttribute(k, attrs[k]);
+  }
+  (children||[]).forEach(c=> n.appendChild(typeof c==='string'? document.createTextNode(c): c));
+  return n;
+};
+const fmtFt = n => (n===null||n===undefined||isNaN(n)) ? '—' : Math.round(n).toLocaleString('hu-HU') + ' Ft';
+const fmtNum = n => (n===null||n===undefined||isNaN(n)) ? '—' : Math.round(n).toLocaleString('hu-HU');
+const fmtCompact = n=>{
+  if(n===null||n===undefined||isNaN(n)) return '—';
+  const sign = n<0?'-':''; const a = Math.abs(n);
+  if(a>=1e9) return sign+(a/1e9).toFixed(2).replace('.',',')+' Mrd Ft';
+  if(a>=1e6) return sign+(a/1e6).toFixed(1).replace('.',',')+' M Ft';
+  if(a>=1e3) return sign+(a/1e3).toFixed(0)+' E Ft';
+  return sign+a+' Ft';
+};
+const fmtCompactAxis = n=>{
+  const sign = n<0?'-':''; const a = Math.abs(n);
+  if(a>=1e9) return sign+(a/1e9).toFixed(1)+'Mrd';
+  if(a>=1e6) return sign+(a/1e6).toFixed(0)+'M';
+  if(a>=1e3) return sign+(a/1e3).toFixed(0)+'E';
+  return sign+String(a);
+};
+const MONTHS = ['jan','febr','márc','ápr','máj','jún','júl','aug','szept','okt','nov','dec'];
+function fmtDate(iso){
+  if(!iso) return '—';
+  const [y,m,d] = iso.split('-');
+  return `${y}.${m}.${d}.`;
+}
+function monthKey(iso){ return iso? iso.slice(0,7) : null; }
+function monthLabel(key){
+  if(!key) return '—';
+  const [y,m] = key.split('-');
+  return `${y}. ${MONTHS[parseInt(m,10)-1]}`;
+}
+function truncateLabel(s, max){
+  max = max || 30;
+  if(!s) return '';
+  return s.length > max ? s.slice(0, max-1)+'…' : s;
+}
+function labelPadding(labels, fontSize, minPad, maxPad){
+  fontSize = fontSize || 11.5; minPad = minPad || 170; maxPad = maxPad || 260;
+  const widest = Math.max(0, ...labels.map(l=> truncateLabel(l).length));
+  const est = widest * fontSize * 0.56 + 20;
+  return Math.max(minPad, Math.min(maxPad, est));
+}
+function escapeHtml(s){
+  if(s===null||s===undefined) return '';
+  return String(s).replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function csvEscape(v){
+  if(v===null||v===undefined) return '';
+  const s = String(v);
+  if(/[",;\n]/.test(s)) return '"'+s.replace(/"/g,'""')+'"';
+  return s;
+}
+function downloadCSV(filename, rows){
+  const content = rows.map(r=> r.map(csvEscape).join(';')).join('\r\n');
+  const blob = new Blob(['﻿'+content], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = el('a',{href:url, download:filename});
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ---- tooltip ---- */
+const tooltipEl = document.getElementById('viz-tooltip');
+function showTip(html, evt){
+  tooltipEl.innerHTML = html;
+  tooltipEl.style.display = 'block';
+  moveTip(evt);
+}
+function moveTip(evt){
+  const pad = 14;
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  const w = 260, h = 140;
+  if(x + w > window.innerWidth) x = evt.clientX - w - pad;
+  if(y + h > window.innerHeight) y = evt.clientY - h - pad;
+  tooltipEl.style.left = x+'px';
+  tooltipEl.style.top = y+'px';
+}
+function hideTip(){ tooltipEl.style.display='none'; }
+
+/* ============================ data prep ============================ */
+const ITEMS = DATA.items;
+const SUPPLIERS = DATA.suppliers;
+const PREV = DATA.previousSettlement;
+const MISSING = DATA.missing;
+const TRANSFERS = DATA.transfers;
+const NOTES = DATA.supplierNotes;
+
+const SUPPLIER_COLORS = {};
+(function(){
+  const slots = ['--s1','--s2','--s3','--s4','--s5','--s6','--s7'];
+  const names = SUPPLIERS.map(s=>s.nev);
+  names.forEach((n,i)=> SUPPLIER_COLORS[n] = slots[i % slots.length]);
+})();
+function cv(varName){ return getComputedStyle(document.documentElement).getPropertyValue(varName).trim(); }
+
+// join previous-settlement status onto items by szallito+szamlaszam
+const prevMap = {};
+PREV.forEach(p=>{
+  if(!p.szamlaszam) return;
+  prevMap[p.szallito+'|'+p.szamlaszam] = p;
+});
+ITEMS.forEach(it=>{
+  const p = prevMap[it.szallito+'|'+it.szamlaszam];
+  it._elszamolva = p ? p.elszamolva : null; // 'IGEN – elszámolva' / 'NEM – még nem' / null
+  it._nemFizetendo = /nem fizetendő/i.test(it.statusz||'');
+  it._flagged = (it.elteres && it.elteres !== 0) ||
+                /ELLENŐRIZENDŐ|EGYEZTETENDŐ/i.test(it.megjegyzes||'') ||
+                /NINCS UTALÁSI BIZONYLAT/i.test(it.statusz||'');
+  it._noTransfer = /NINCS UTALÁSI BIZONYLAT/i.test(it.statusz||'');
+});
+
+const TYPE_GROUPS = {
+  group(tipus){
+    if(!tipus) return 'Egyéb';
+    if(/^Részszámla/.test(tipus)) return 'Részszámla';
+    if(/^Végszámla/.test(tipus)) return 'Végszámla';
+    if(/Módosító/.test(tipus)) return 'Módosító számla';
+    if(/Érvénytelenítő|sztornó/i.test(tipus)) return 'Sztornó / érvénytelenítő';
+    if(/^Számla$/.test(tipus)) return 'Számla';
+    return tipus;
+  }
+};
+
+/* ============================ filter state ============================ */
+const state = {
+  supplier: 'all',
+  tipus: 'all',
+  statusz: 'all',
+  afaTipus: 'all',
+  elszamolva: 'all',
+  dateFrom: '',
+  dateTo: '',
+  search: '',
+  onlyFlag: false,
+  sortKey: 'sor',
+  sortDir: 1,
+};
+
+function filteredItems(){
+  return ITEMS.filter(it=>{
+    if(state.supplier!=='all' && it.szallito!==state.supplier) return false;
+    if(state.tipus!=='all' && TYPE_GROUPS.group(it.tipus)!==state.tipus) return false;
+    if(state.statusz!=='all' && it.statusz!==state.statusz) return false;
+    if(state.afaTipus!=='all' && it.afaTipus!==state.afaTipus) return false;
+    if(state.elszamolva!=='all'){
+      if(state.elszamolva==='n/a' && it._elszamolva) return false;
+      if(state.elszamolva!=='n/a' && (!it._elszamolva || it._elszamolva.indexOf(state.elszamolva)!==0)) return false;
+    }
+    if(state.dateFrom && (!it.teljesites || it.teljesites < state.dateFrom)) return false;
+    if(state.dateTo && (!it.teljesites || it.teljesites > state.dateTo)) return false;
+    if(state.onlyFlag && !it._flagged) return false;
+    if(state.search){
+      const q = state.search.toLowerCase();
+      const hay = [it.szallito,it.szamlaszam,it.kozlemeny,it.megjegyzes,it.tipus].join(' ').toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    return true;
+  });
+}
+
+function sum(arr, key){ return arr.reduce((a,b)=> a + (Number(b[key])||0), 0); }
+
+/* ============================ SVG chart builders ============================ */
+const SVGNS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs){
+  const n = document.createElementNS(SVGNS, tag);
+  for(const k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+function niceMax(v){
+  if(v<=0) return 10;
+  const mag = Math.pow(10, Math.floor(Math.log10(v)));
+  const norm = v/mag;
+  let step;
+  if(norm<=1) step=1; else if(norm<=2) step=2; else if(norm<=5) step=5; else step=10;
+  return step*mag;
+}
+
+/* --- Grouped horizontal bar chart --- */
+function renderGroupedBarChart(container, {groups, series, formatValue, valueForTip}){
+  container.innerHTML = '';
+  const W = 900, rowH = 22*series.length + 18, PAD_L = labelPadding(groups.map(g=>g.label)), PAD_R = 70, PAD_T = 10, PAD_B = 6;
+  const H = PAD_T + PAD_B + rowH*groups.length;
+  const maxVal = niceMax(Math.max(1, ...groups.flatMap(g=> series.map(s=> g.values[s.key]||0))));
+  const plotW = W - PAD_L - PAD_R;
+  const svg = svgEl('svg', {viewBox:`0 0 ${W} ${H}`, width:'100%', height:H});
+
+  // gridlines + axis ticks
+  const ticks = 4;
+  for(let i=0;i<=ticks;i++){
+    const v = maxVal*i/ticks;
+    const x = PAD_L + plotW*i/ticks;
+    svg.appendChild(svgEl('line',{x1:x,y1:PAD_T-2,x2:x,y2:H-PAD_B, stroke:cv('--grid'), 'stroke-width':1}));
+    const t = svgEl('text',{x:x, y:H-PAD_B+13, 'font-size':9.5, fill:cv('--text-muted'), 'text-anchor': i===0?'start':'middle'});
+    t.textContent = fmtCompactAxis(v);
+    svg.appendChild(t);
+  }
+  svg.appendChild(svgEl('line',{x1:PAD_L,y1:PAD_T-2,x2:PAD_L,y2:H-PAD_B, stroke:cv('--baseline'), 'stroke-width':1}));
+
+  groups.forEach((g,gi)=>{
+    const gTop = PAD_T + gi*rowH;
+    const label = svgEl('text',{x:PAD_L-10, y:gTop + (rowH-14)/2 + series.length*11, 'font-size':11.5, fill:cv('--text-primary'), 'text-anchor':'end', 'font-weight':600});
+    label.textContent = truncateLabel(g.label);
+    const labelTitle = svgEl('title',{}); labelTitle.textContent = g.label; label.appendChild(labelTitle);
+    svg.appendChild(label);
+    series.forEach((s,si)=>{
+      const val = g.values[s.key]||0;
+      const barW = Math.max(0, plotW * (val/maxVal));
+      const y = gTop + si*20 + 6;
+      const barH = 14;
+      const color = cv(s.color);
+      const rect = svgEl('rect',{x:PAD_L, y:y, width:Math.max(barW,1.5), height:barH, rx:4, ry:4, fill:color, class:'mark'});
+      rect.style.cursor='pointer';
+      rect.addEventListener('mouseenter', (e)=>{
+        showTip(`<b>${escapeHtml(g.label)}</b><div class="tt-row"><span><span class="tt-sw" style="background:${color}"></span>${escapeHtml(s.label)}</span><span>${escapeHtml(formatValue(val))}</span></div>`, e);
+      });
+      rect.addEventListener('mousemove', moveTip);
+      rect.addEventListener('mouseleave', hideTip);
+      svg.appendChild(rect);
+      if(si===series.length-1 || val===Math.max(...series.map(ss=>g.values[ss.key]||0))){
+        // only label the largest bar in the group, if it fits
+        const txt = formatValue(val);
+        const estW = txt.length*6.2;
+        if(barW > estW + 10){
+          const t = svgEl('text',{x:PAD_L+barW-6, y:y+barH-4, 'font-size':10, fill:'#fff', 'text-anchor':'end','font-weight':700});
+          t.textContent = txt; svg.appendChild(t);
+        }
+      }
+    });
+    if(gi>0){
+      svg.appendChild(svgEl('line',{x1:PAD_L,y1:gTop,x2:W-PAD_R,y2:gTop, stroke:cv('--grid'),'stroke-width':1}));
+    }
+  });
+  container.appendChild(svg);
+}
+
+/* --- Simple single-series horizontal ranked bar chart --- */
+function renderRankedBarChart(container, {items, formatValue, color}){
+  container.innerHTML='';
+  const W = 900, rowH = 26, PAD_L = labelPadding(items.map(i=>i.label)), PAD_R = 70, PAD_T = 8, PAD_B = 20;
+  const H = PAD_T+PAD_B+rowH*items.length;
+  const maxVal = niceMax(Math.max(1, ...items.map(i=>i.value)));
+  const plotW = W-PAD_L-PAD_R;
+  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${H}`, width:'100%', height:H});
+  const ticks=4;
+  for(let i=0;i<=ticks;i++){
+    const v = maxVal*i/ticks; const x = PAD_L+plotW*i/ticks;
+    svg.appendChild(svgEl('line',{x1:x,y1:PAD_T-2,x2:x,y2:H-PAD_B+4, stroke:cv('--grid'),'stroke-width':1}));
+    const t = svgEl('text',{x:x,y:H-PAD_B+16,'font-size':9.5, fill:cv('--text-muted'),'text-anchor':i===0?'start':'middle'});
+    t.textContent = fmtCompactAxis(v); svg.appendChild(t);
+  }
+  svg.appendChild(svgEl('line',{x1:PAD_L,y1:PAD_T-2,x2:PAD_L,y2:H-PAD_B+4, stroke:cv('--baseline'),'stroke-width':1}));
+  items.forEach((it,i)=>{
+    const y = PAD_T + i*rowH;
+    const barW = Math.max(1.5, plotW*(it.value/maxVal));
+    const lab = svgEl('text',{x:PAD_L-10,y:y+16,'font-size':11.5,fill:cv('--text-primary'),'text-anchor':'end','font-weight':600});
+    lab.textContent = truncateLabel(it.label);
+    const labTitle = svgEl('title',{}); labTitle.textContent = it.label; lab.appendChild(labTitle);
+    svg.appendChild(lab);
+    const rect = svgEl('rect',{x:PAD_L,y:y+4,width:barW,height:16,rx:4,ry:4, fill: it.color||cv(color)});
+    rect.style.cursor='pointer';
+    rect.addEventListener('mouseenter', e=> showTip(`<b>${escapeHtml(it.label)}</b><div class="tt-row"><span>Érték</span><span>${escapeHtml(formatValue(it.value))}</span></div>${it.sub?`<div class="mini" style="margin-top:4px;color:#c8cede">${escapeHtml(it.sub)}</div>`:''}`, e));
+    rect.addEventListener('mousemove', moveTip);
+    rect.addEventListener('mouseleave', hideTip);
+    svg.appendChild(rect);
+    const txt = formatValue(it.value);
+    const estW = txt.length*6.2;
+    const t = svgEl('text',{'font-size':10,'font-weight':700});
+    if(barW > estW+10){
+      t.setAttribute('x', PAD_L+barW-6); t.setAttribute('y', y+16); t.setAttribute('text-anchor','end'); t.setAttribute('fill','#fff');
+    } else {
+      t.setAttribute('x', PAD_L+barW+6); t.setAttribute('y', y+16); t.setAttribute('text-anchor','start'); t.setAttribute('fill', cv('--text-primary'));
+    }
+    t.textContent = txt; svg.appendChild(t);
+  });
+  container.appendChild(svg);
+}
+
+/* --- Line chart with crosshair tooltip --- */
+function renderLineChart(container, {points, series, formatValue}){
+  container.innerHTML='';
+  const W=900,H=300, PAD_L=64,PAD_R=20,PAD_T=16,PAD_B=34;
+  const plotW=W-PAD_L-PAD_R, plotH=H-PAD_T-PAD_B;
+  const maxVal = niceMax(Math.max(1, ...points.flatMap(p=> series.map(s=>p[s.key]||0))));
+  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${H}`, width:'100%', height:H});
+  const n = points.length;
+  const xFor = i=> PAD_L + (n<=1?0:plotW*i/(n-1));
+  const yFor = v=> PAD_T + plotH*(1-v/maxVal);
+
+  const ticks=4;
+  for(let i=0;i<=ticks;i++){
+    const v = maxVal*i/ticks; const y = yFor(v);
+    svg.appendChild(svgEl('line',{x1:PAD_L,y1:y,x2:W-PAD_R,y2:y,stroke:cv('--grid'),'stroke-width':1}));
+    const t = svgEl('text',{x:PAD_L-8,y:y+3,'font-size':9.5,fill:cv('--text-muted'),'text-anchor':'end'});
+    t.textContent = fmtCompactAxis(v); svg.appendChild(t);
+  }
+  // x labels (skip to avoid crowding)
+  const labelEvery = Math.max(1, Math.ceil(n/9));
+  points.forEach((p,i)=>{
+    if(i%labelEvery!==0 && i!==n-1) return;
+    const t = svgEl('text',{x:xFor(i), y:H-PAD_B+16, 'font-size':9.5, fill:cv('--text-muted'), 'text-anchor':'middle'});
+    t.textContent = p.label; svg.appendChild(t);
+  });
+  svg.appendChild(svgEl('line',{x1:PAD_L,y1:H-PAD_B,x2:W-PAD_R,y2:H-PAD_B,stroke:cv('--baseline'),'stroke-width':1}));
+
+  series.forEach(s=>{
+    const color = cv(s.color);
+    // area wash
+    let areaD = `M ${xFor(0)} ${yFor(0)} `;
+    points.forEach((p,i)=> areaD += `L ${xFor(i)} ${yFor(p[s.key]||0)} `);
+    areaD += `L ${xFor(n-1)} ${yFor(0)} Z`;
+    svg.appendChild(svgEl('path',{d:areaD, fill:color, opacity:0.08, stroke:'none'}));
+    let lineD='';
+    points.forEach((p,i)=>{ lineD += (i===0?'M':'L') + ` ${xFor(i)} ${yFor(p[s.key]||0)} `; });
+    svg.appendChild(svgEl('path',{d:lineD, fill:'none', stroke:color, 'stroke-width':2, 'stroke-linejoin':'round','stroke-linecap':'round'}));
+  });
+
+  // hover crosshair
+  const crosshair = svgEl('line',{x1:0,y1:PAD_T,x2:0,y2:H-PAD_B, stroke:cv('--text-muted'), 'stroke-width':1, 'stroke-dasharray':'3,3', opacity:0});
+  svg.appendChild(crosshair);
+  const dots = series.map(s=> {
+    const d = svgEl('circle',{r:4.5, fill:cv(s.color), stroke:cv('--surface-1'), 'stroke-width':2, opacity:0});
+    svg.appendChild(d); return d;
+  });
+  const hitArea = svgEl('rect',{x:PAD_L,y:PAD_T,width:plotW,height:plotH, fill:'transparent'});
+  hitArea.addEventListener('mousemove', (e)=>{
+    const rect = svg.getBoundingClientRect();
+    const scaleX = W/rect.width;
+    const mx = (e.clientX-rect.left)*scaleX;
+    let idx = Math.round((mx-PAD_L)/(plotW/(Math.max(1,n-1))));
+    idx = Math.max(0, Math.min(n-1, idx));
+    const p = points[idx];
+    crosshair.setAttribute('x1', xFor(idx)); crosshair.setAttribute('x2', xFor(idx)); crosshair.setAttribute('opacity',1);
+    let rows='';
+    series.forEach((s,si)=>{
+      dots[si].setAttribute('cx', xFor(idx)); dots[si].setAttribute('cy', yFor(p[s.key]||0)); dots[si].setAttribute('opacity',1);
+      rows += `<div class="tt-row"><span><span class="tt-sw" style="background:${cv(s.color)}"></span>${escapeHtml(s.label)}</span><span>${escapeHtml(formatValue(p[s.key]||0))}</span></div>`;
+    });
+    showTip(`<b>${escapeHtml(p.label)}</b>${rows}`, e);
+  });
+  hitArea.addEventListener('mouseleave', ()=>{ crosshair.setAttribute('opacity',0); dots.forEach(d=>d.setAttribute('opacity',0)); hideTip(); });
+  svg.appendChild(hitArea);
+  container.appendChild(svg);
+}
+
+/* ============================ Tabs ============================ */
+const TABS = [
+  {id:'overview', label:'Áttekintés'},
+  {id:'items', label:'Tételek'},
+  {id:'suppliers', label:'Szállítók'},
+  {id:'report', label:'Kimutatás-építő'},
+  {id:'prev', label:'Korábbi elszámolás'},
+  {id:'flags', label:'Problémás tételek', countKey:'flags'},
+];
+function flaggedCount(){
+  return ITEMS.filter(i=>i._flagged && !i._noTransfer).length + MISSING.length;
+}
+function buildTabs(){
+  const nav = $('#tabnav'); nav.innerHTML='';
+  TABS.forEach(t=>{
+    const btn = el('button',{class:'tab-btn'+(t.id==='overview'?' active':''), 'data-tab':t.id, onclick:()=>switchTab(t.id)});
+    btn.appendChild(document.createTextNode(t.label));
+    if(t.countKey==='flags'){
+      const n = flaggedCount();
+      if(n>0){ btn.classList.add('alert'); btn.appendChild(el('span',{class:'cnt'},[String(n)])); }
+    }
+    nav.appendChild(btn);
+  });
+}
+function switchTab(id){
+  $$('.tab-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===id));
+  $$('.tab-panel').forEach(p=> p.classList.toggle('active', p.id==='panel-'+id));
+}
+
+/* ============================ Overview ============================ */
+function renderOverview(){
+  const panel = $('#panel-overview');
+  const items = filteredItems();
+  const live = items.filter(i=> !i._nemFizetendo);
+  const netto = sum(live,'netto'), afa = sum(live,'afa'), visszatartas = sum(live,'visszatartas'),
+        fizetendo = sum(live,'fizetendo'), utalt = sum(items.filter(i=>i.utaltOsszeg!=null),'utaltOsszeg'),
+        elteres = sum(items,'elteres');
+  const flagged = items.filter(i=>i._flagged).length;
+  const noTransfer = items.filter(i=>i._noTransfer);
+  const noTransferSum = sum(noTransfer,'fizetendo');
+
+  panel.innerHTML = '';
+  const kpiGrid = el('div',{class:'kpi-grid'});
+  const kpis = [
+    {lbl:'Tételek száma', val: items.length+' db', sub:`${live.length} érvényes / ${items.length-live.length} sztornó·nem fizetendő`},
+    {lbl:'Nettó összesen', val: fmtCompact(netto), sub: fmtFt(netto)},
+    {lbl:'ÁFA összesen', val: fmtCompact(afa), sub: fmtFt(afa)},
+    {lbl:'Visszatartás', val: fmtCompact(visszatartas), sub: fmtFt(visszatartas)},
+    {lbl:'Számla szerint fizetendő', val: fmtCompact(fizetendo), sub: fmtFt(fizetendo)},
+    {lbl:'Utalt összeg', val: fmtCompact(utalt), sub: fmtFt(utalt)},
+    {lbl:'Eltérés (utalt–fizetendő)', val: fmtCompact(elteres), sub: elteres===0?'nincs eltérés':'ellenőrizendő', flag: elteres!==0, subClass: elteres===0?'good':'bad'},
+    {lbl:'Egyeztetendő tételek', val: flagged+' db', sub: noTransfer.length? `${noTransfer.length} db hiányzó bizonylat · ${fmtCompact(noTransferSum)}`:'nincs hiányzó bizonylat', flag: flagged>0, subClass: flagged>0?'bad':'good'},
+  ];
+  kpis.forEach(k=>{
+    kpiGrid.appendChild(el('div',{class:'kpi'+(k.flag?' flag':'')},[
+      el('div',{class:'lbl'},[k.lbl]),
+      el('div',{class:'val'},[k.val]),
+      el('div',{class:'sub'+(k.subClass?' '+k.subClass:'')},[k.sub]),
+    ]));
+  });
+  panel.appendChild(kpiGrid);
+
+  // charts row 1
+  const row1 = el('div',{class:'grid-2'});
+  const cardSupplier = el('div',{class:'card'});
+  cardSupplier.appendChild(el('h2',{},['Szállítónkénti bontás']));
+  cardSupplier.appendChild(el('div',{class:'hint'},['Nettó, számla szerint fizetendő és ténylegesen utalt összeg szállítónként (az aktuális szűrés szerint)']));
+  const legend1 = el('div',{class:'legend'});
+  const seriesDef = [
+    {key:'netto', label:'Nettó', color:'--s1'},
+    {key:'fizetendo', label:'Fizetendő', color:'--s2'},
+    {key:'utalt', label:'Utalt', color:'--s3'},
+  ];
+  seriesDef.forEach(s=> legend1.appendChild(el('div',{class:'item'},[el('span',{class:'sw',style:`background:${cv(s.color)}`}),s.label])));
+  cardSupplier.appendChild(legend1);
+  const chartWrap1 = el('div',{class:'chart-scroll'});
+  cardSupplier.appendChild(chartWrap1);
+  row1.appendChild(cardSupplier);
+
+  const cardDonut = el('div',{class:'card'});
+  cardDonut.appendChild(el('h2',{},['Bizonylat típusa szerint']));
+  cardDonut.appendChild(el('div',{class:'hint'},['Tételek száma bizonylattípusonként']));
+  const chartWrap2 = el('div',{class:'chart-scroll'});
+  cardDonut.appendChild(chartWrap2);
+  row1.appendChild(cardDonut);
+  panel.appendChild(row1);
+
+  // supplier grouped bars
+  const supGroups = {};
+  items.forEach(it=>{
+    if(!supGroups[it.szallito]) supGroups[it.szallito] = {netto:0,fizetendo:0,utalt:0};
+    if(!it._nemFizetendo){ supGroups[it.szallito].netto += it.netto||0; supGroups[it.szallito].fizetendo += it.fizetendo||0; }
+    supGroups[it.szallito].utalt += it.utaltOsszeg||0;
+  });
+  const groups = Object.keys(supGroups).sort((a,b)=> supGroups[b].netto-supGroups[a].netto)
+    .map(k=>({label:k, values:supGroups[k]}));
+  if(groups.length){
+    renderGroupedBarChart(chartWrap1, {groups, series:seriesDef, formatValue:fmtCompact});
+  } else {
+    chartWrap1.innerHTML = '<div class="empty-state">Nincs megjeleníthető adat a szűrésre</div>';
+  }
+
+  // type breakdown ranked bar
+  const typeCounts = {};
+  items.forEach(it=>{ const g = TYPE_GROUPS.group(it.tipus); typeCounts[g]=(typeCounts[g]||0)+1; });
+  const typeItems = Object.keys(typeCounts).sort((a,b)=>typeCounts[b]-typeCounts[a]).map(k=>({label:k, value:typeCounts[k]}));
+  if(typeItems.length){
+    renderRankedBarChart(chartWrap2, {items:typeItems, formatValue:v=> v+' db', color:'--s1'});
+  } else {
+    chartWrap2.innerHTML = '<div class="empty-state">Nincs adat</div>';
+  }
+
+  // row 2: monthly trend + settlement progress
+  const row2 = el('div',{class:'grid-2'});
+  const cardTrend = el('div',{class:'card'});
+  cardTrend.appendChild(el('h2',{},['Havi trend — teljesítés vs. utalás']));
+  cardTrend.appendChild(el('div',{class:'hint'},['Nettó számlaérték a teljesítés hónapja szerint, illetve utalt összeg az utalás hónapja szerint']));
+  const legend2 = el('div',{class:'legend'});
+  const lineSeries = [{key:'inv', label:'Számlázott nettó (teljesítés hónapja)', color:'--s1'},{key:'paid', label:'Utalt összeg (utalás hónapja)', color:'--s2'}];
+  lineSeries.forEach(s=> legend2.appendChild(el('div',{class:'item'},[el('span',{class:'sw',style:`background:${cv(s.color)}`}),s.label])));
+  cardTrend.appendChild(legend2);
+  const chartWrap3 = el('div',{class:'chart-scroll'});
+  cardTrend.appendChild(chartWrap3);
+  row2.appendChild(cardTrend);
+
+  const cardProgress = el('div',{class:'card'});
+  cardProgress.appendChild(el('h2',{},['Elszámolási előrehaladás szállítónként']));
+  cardProgress.appendChild(el('div',{class:'hint'},['A 2025.08.08-i részelszámolásban már elszámolt hányad a fizetendő összeg arányában']));
+  const progWrap = el('div',{class:'stack'});
+  SUPPLIERS.forEach(s=>{
+    const pct = s.fizetendoOsszesen>0 ? Math.min(100, 100*(s.fizetendoOsszesen - s.megNemSzamoltNetto*0 - (s.megNemSzamoltNetto>0? (s.fizetendoOsszesen-s.korabbanElszamoltAlap):0))/s.fizetendoOsszesen) : 0;
+    const elszamoltArany = s.fizetendoOsszesen>0 ? Math.max(0,Math.min(100, 100*s.korabbanElszamoltAlap/s.fizetendoOsszesen)) : 0;
+    progWrap.appendChild(el('div',{class:'supplier-row'},[
+      el('div',{},[s.nev]),
+      el('div',{class:'meter'},[el('i',{style:`width:${elszamoltArany}%`})]),
+      el('div',{style:'text-align:right;font-weight:700;'},[Math.round(elszamoltArany)+'%']),
+    ]));
+  });
+  cardProgress.appendChild(progWrap);
+  cardProgress.appendChild(el('div',{class:'helptext'},['A sáv a korábban elszámolt alap / számla szerint fizetendő arányát mutatja szállítónként (teljes állomány, nem csak a szűrt tételek).']));
+  row2.appendChild(cardProgress);
+  panel.appendChild(row2);
+
+  // monthly aggregation
+  const invByMonth = {}, paidByMonth = {};
+  items.forEach(it=>{
+    if(!it._nemFizetendo){
+      const mk = monthKey(it.teljesites);
+      if(mk) invByMonth[mk] = (invByMonth[mk]||0) + (it.netto||0);
+    }
+    const pk = monthKey(it.utalasDatum);
+    if(pk) paidByMonth[pk] = (paidByMonth[pk]||0) + (it.utaltOsszeg||0);
+  });
+  const allMonths = Array.from(new Set([...Object.keys(invByMonth), ...Object.keys(paidByMonth)])).sort();
+  const points = allMonths.map(mk=>({label:monthLabel(mk), inv:invByMonth[mk]||0, paid:paidByMonth[mk]||0}));
+  if(points.length>1){
+    renderLineChart(chartWrap3, {points, series:lineSeries, formatValue:fmtCompact});
+  } else {
+    chartWrap3.innerHTML = '<div class="empty-state">Nincs elég adat a trendhez a szűrésre</div>';
+  }
+}
+
+/* ============================ Items tab ============================ */
+function buildSelect(id, options, current, onchange){
+  const sel = el('select',{id, onchange:(e)=>onchange(e.target.value)});
+  options.forEach(o=>{
+    const opt = el('option',{value:o.value},[o.label]);
+    if(o.value===current) opt.setAttribute('selected','selected');
+    sel.appendChild(opt);
+  });
+  return sel;
+}
+function itemStatusBadge(it){
+  if(it._noTransfer) return el('span',{class:'badge crit'},['⛔ nincs bizonylat']);
+  if(it._nemFizetendo) return el('span',{class:'badge muted'},['nem fizetendő']);
+  if(it.elteres && it.elteres!==0) return el('span',{class:'badge crit'},['⚠ eltérés']);
+  if(/Kiegyenlítve/i.test(it.statusz||'')) return el('span',{class:'badge good'},['✓ kiegyenlítve']);
+  return el('span',{class:'badge muted'},[it.statusz||'—']);
+}
+
+function renderItemsFilterBar(container, onChange){
+  const bar = el('div',{class:'filterbar'});
+  const supplierOpts = [{value:'all',label:'Összes szállító'}].concat(SUPPLIERS.map(s=>({value:s.nev,label:s.nev})));
+  const typeOpts = [{value:'all',label:'Összes típus'}].concat(Array.from(new Set(ITEMS.map(i=>TYPE_GROUPS.group(i.tipus)))).sort().map(t=>({value:t,label:t})));
+  const statuszOpts = [{value:'all',label:'Összes státusz'}].concat(Array.from(new Set(ITEMS.map(i=>i.statusz).filter(Boolean))).map(t=>({value:t,label:t})));
+  const afaOpts = [{value:'all',label:'Összes ÁFA típus'}].concat(Array.from(new Set(ITEMS.map(i=>i.afaTipus).filter(Boolean))).map(t=>({value:t,label:t})));
+  const elszOpts = [{value:'all',label:'Mind'},{value:'IGEN',label:'Korábban elszámolva'},{value:'NEM',label:'Még nem elszámolva'},{value:'n/a',label:'Nincs infó (nem szerepel)'}];
+
+  const mk = (labelTxt, selectNode)=> el('div',{class:'fgroup'},[el('label',{},[labelTxt]), selectNode]);
+
+  bar.appendChild(mk('Szállító', buildSelect('f-sup', supplierOpts, state.supplier, v=>{state.supplier=v; onChange();})));
+  bar.appendChild(mk('Bizonylat típusa', buildSelect('f-type', typeOpts, state.tipus, v=>{state.tipus=v; onChange();})));
+  bar.appendChild(mk('Státusz', buildSelect('f-status', statuszOpts, state.statusz, v=>{state.statusz=v; onChange();})));
+  bar.appendChild(mk('ÁFA típusa', buildSelect('f-afa', afaOpts, state.afaTipus, v=>{state.afaTipus=v; onChange();})));
+  bar.appendChild(mk('Elszámolási státusz', buildSelect('f-elsz', elszOpts, state.elszamolva, v=>{state.elszamolva=v; onChange();})));
+  bar.appendChild(mk('Teljesítés — tól', el('input',{type:'date', value:state.dateFrom, onchange:(e)=>{state.dateFrom=e.target.value; onChange();}})));
+  bar.appendChild(mk('Teljesítés — ig', el('input',{type:'date', value:state.dateTo, onchange:(e)=>{state.dateTo=e.target.value; onChange();}})));
+  bar.appendChild(mk('Keresés', el('input',{type:'text', placeholder:'számlaszám, közlemény, megjegyzés…', value:state.search, oninput:(e)=>{state.search=e.target.value; onChange();}})));
+  const chkWrap = el('div',{class:'fgroup'},[el('label',{},['Szűrő']), el('label',{class:'chk'},[el('input',{type:'checkbox', checked: state.onlyFlag?'checked':null, onchange:(e)=>{state.onlyFlag=e.target.checked; onChange();}}), 'csak problémás/egyeztetendő'])]);
+  bar.appendChild(chkWrap);
+  bar.appendChild(el('div',{class:'spacer'}));
+  bar.appendChild(el('button',{class:'btn', onclick:()=>{
+    state.supplier='all';state.tipus='all';state.statusz='all';state.afaTipus='all';state.elszamolva='all';
+    state.dateFrom='';state.dateTo='';state.search='';state.onlyFlag=false;
+    onChange(true);
+  }},['Szűrők törlése']));
+  bar.appendChild(el('button',{class:'btn primary', onclick:()=> exportItemsCSV()},['⭳ CSV export']));
+  container.appendChild(bar);
+}
+
+function exportItemsCSV(){
+  const items = filteredItems();
+  const rows = [['Sor','Szállító','Számla sorszáma','Bizonylat típusa','Teljesítés','Fizetési határidő','Nettó (Ft)','ÁFA típusa','ÁFA (Ft)','Visszatartás (Ft)','Fizetendő (Ft)','Utalás dátuma','Utalt összeg (Ft)','Eltérés (Ft)','Közlemény','Státusz','Megjegyzés']];
+  items.forEach(it=> rows.push([it.sor,it.szallito,it.szamlaszam,it.tipus,it.teljesites,it.hatarido,it.netto,it.afaTipus,it.afa,it.visszatartas,it.fizetendo,it.utalasDatum,it.utaltOsszeg,it.elteres,it.kozlemeny,it.statusz,it.megjegyzes]));
+  downloadCSV('palotaliget_tetelek.csv', rows);
+}
+
+const COLS = [
+  {key:'sor', label:'#', num:true},
+  {key:'szallito', label:'Szállító'},
+  {key:'szamlaszam', label:'Számla'},
+  {key:'tipus', label:'Típus'},
+  {key:'teljesites', label:'Teljesítés'},
+  {key:'netto', label:'Nettó', num:true},
+  {key:'afa', label:'ÁFA', num:true},
+  {key:'visszatartas', label:'Visszatart.', num:true},
+  {key:'fizetendo', label:'Fizetendő', num:true},
+  {key:'utalasDatum', label:'Utalás dát.'},
+  {key:'utaltOsszeg', label:'Utalt', num:true},
+  {key:'elteres', label:'Eltérés', num:true},
+  {key:'status', label:'Állapot'},
+];
+
+function renderItemsTable(container){
+  container.innerHTML='';
+  let items = filteredItems();
+  const {sortKey, sortDir} = state;
+  items = items.slice().sort((a,b)=>{
+    let va = sortKey==='status' ? (a._flagged?1:0) : a[sortKey];
+    let vb = sortKey==='status' ? (b._flagged?1:0) : b[sortKey];
+    if(va===null||va===undefined) va = typeof vb==='number' ? -Infinity : '';
+    if(vb===null||vb===undefined) vb = typeof va==='number' ? -Infinity : '';
+    if(typeof va === 'string') return va.localeCompare(vb,'hu')*sortDir;
+    return (va-vb)*sortDir;
+  });
+
+  const wrap = el('div',{class:'tbl-wrap'});
+  const table = el('table');
+  const thead = el('thead');
+  const trh = el('tr');
+  COLS.forEach(c=>{
+    const th = el('th',{class: c.key===sortKey? 'sorted':'', onclick:()=>{
+      if(state.sortKey===c.key) state.sortDir*=-1; else {state.sortKey=c.key; state.sortDir=1;}
+      renderItemsTable(container);
+    }},[c.label + (c.key===sortKey ? (sortDir>0?' ▲':' ▼') : '')]);
+    trh.appendChild(th);
+  });
+  thead.appendChild(trh); table.appendChild(thead);
+
+  const tbody = el('tbody');
+  if(items.length===0){
+    tbody.appendChild(el('tr',{},[el('td',{colspan:COLS.length},[el('div',{class:'empty-state'},['Nincs a szűrésnek megfelelő tétel'])])]));
+  }
+  items.forEach(it=>{
+    let rowClass = '';
+    if(it._nemFizetendo) rowClass = 'r-muted';
+    else if(it._noTransfer || (it.elteres && it.elteres!==0)) rowClass = 'r-critical';
+    else if(it._flagged) rowClass = 'r-warning';
+    const tr = el('tr',{class: rowClass});
+    tr.appendChild(el('td',{class:'num'},[String(it.sor??'')]));
+    tr.appendChild(el('td',{},[it.szallito||'']));
+    tr.appendChild(el('td',{class:'row-toggle', onclick:()=>toggleExpand(it, tr)},[it.szamlaszam||'']));
+    tr.appendChild(el('td',{class:'wrap'},[it.tipus||'']));
+    tr.appendChild(el('td',{},[fmtDate(it.teljesites)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(it.netto)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(it.afa)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(it.visszatartas)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(it.fizetendo)]));
+    tr.appendChild(el('td',{},[fmtDate(it.utalasDatum)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(it.utaltOsszeg)]));
+    tr.appendChild(el('td',{class:'num'},[it.elteres? fmtNum(it.elteres): '—']));
+    tr.appendChild(el('td',{},[itemStatusBadge(it)]));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+
+  const tfoot = el('tfoot');
+  const tf = el('tr');
+  const totals = {netto:sum(items.filter(i=>!i._nemFizetendo),'netto'), afa:sum(items.filter(i=>!i._nemFizetendo),'afa'),
+    visszatartas:sum(items.filter(i=>!i._nemFizetendo),'visszatartas'), fizetendo:sum(items.filter(i=>!i._nemFizetendo),'fizetendo'),
+    utaltOsszeg:sum(items,'utaltOsszeg'), elteres:sum(items,'elteres')};
+  tf.appendChild(el('td',{colspan:2},[`${items.length} tétel`]));
+  tf.appendChild(el('td',{colspan:3},['Összesen']));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totals.netto)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totals.afa)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totals.visszatartas)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totals.fizetendo)]));
+  tf.appendChild(el('td',{},['']));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totals.utaltOsszeg)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totals.elteres)]));
+  tf.appendChild(el('td',{},['']));
+  tfoot.appendChild(tf); table.appendChild(tfoot);
+
+  wrap.appendChild(table);
+  container.appendChild(wrap);
+}
+let expandedRow = null;
+function toggleExpand(it, tr){
+  if(expandedRow && expandedRow.parentNode) expandedRow.parentNode.removeChild(expandedRow);
+  if(expandedRow && expandedRow._for === it) { expandedRow=null; return; }
+  const tdCount = COLS.length;
+  const exp = el('tr',{class:'expand-row'});
+  exp._for = it;
+  const td = el('td',{colspan:tdCount});
+  const grid = el('div',{class:'expand-grid'});
+  const rows = [
+    ['Fizetési határidő', fmtDate(it.hatarido)],
+    ['ÁFA típusa', it.afaTipus||'—'],
+    ['Utalás közleménye', it.kozlemeny||'—'],
+    ['Utalási bizonylat fájlneve', it.utalasiFajl||'—'],
+    ['Számla fájlneve', it.szamlaFajl||'—'],
+    ['Korábbi elszámolásban', it._elszamolva || 'nem szerepel a 2025.08.08-i elszámolásban'],
+    ['Megjegyzés', it.megjegyzes||'—'],
+  ];
+  rows.forEach(([k,v])=> grid.appendChild(el('div',{},[el('div',{class:'k'},[k]), el('div',{class:'v'},[v])])));
+  td.appendChild(grid); exp.appendChild(td);
+  tr.parentNode.insertBefore(exp, tr.nextSibling);
+  expandedRow = exp;
+}
+
+function renderItemsTab(){
+  const panel = $('#panel-items'); panel.innerHTML='';
+  panel.appendChild(el('div',{class:'card', style:'padding-bottom:0;margin-bottom:14px;border:none;background:transparent;padding:0;'}));
+  const filterHost = el('div'); renderItemsFilterBar(filterHost, (reset)=>{
+    if(reset===true){ rebuildItemsFilterBar(); }
+    renderItemsTable(tableHost);
+    refreshDependentUI();
+  });
+  panel.appendChild(filterHost);
+  const tableHost = el('div');
+  panel.appendChild(tableHost);
+  renderItemsTable(tableHost);
+
+  function rebuildItemsFilterBar(){
+    filterHost.innerHTML='';
+    renderItemsFilterBar(filterHost, (reset)=>{
+      if(reset===true) rebuildItemsFilterBar();
+      renderItemsTable(tableHost);
+      refreshDependentUI();
+    });
+  }
+}
+
+/* ============================ Suppliers tab ============================ */
+function renderSuppliersTab(){
+  const panel = $('#panel-suppliers'); panel.innerHTML='';
+  const card = el('div',{class:'card'});
+  card.appendChild(el('h2',{},['Szállítónkénti összesítő']));
+  card.appendChild(el('div',{class:'hint'},['A teljes állományra vonatkozó összesítés (nem a szűrt tételekre). Kattints egy sorra a Tételek fülön való megjelenítéshez.']));
+  const wrap = el('div',{class:'tbl-wrap'});
+  const table = el('table');
+  const thead = el('thead');
+  const heads = ['Szállító','Számlák (db)','Nettó összesen','Fizetendő','Utalt összeg','Korábban elszámolt (db)','Korábban elszámolt alap','Palotaliget rész 7,9%','Még el nem számolt nettó'];
+  const trh = el('tr'); heads.forEach(h=> trh.appendChild(el('th',{},[h]))); thead.appendChild(trh); table.appendChild(thead);
+  const tbody = el('tbody');
+  SUPPLIERS.forEach(s=>{
+    const tr = el('tr',{class:'row-toggle', onclick:()=>{ state.supplier=s.nev; switchTab('items'); const sel=document.getElementById('f-sup'); if(sel) sel.value=s.nev; renderItemsTab(); }});
+    tr.appendChild(el('td',{},[el('span',{class:'sw', style:`display:inline-block;width:9px;height:9px;border-radius:3px;background:${cv(SUPPLIER_COLORS[s.nev])};margin-right:7px;`}), s.nev]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(s.szamlakDb)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(s.nettoOsszesen)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(s.fizetendoOsszesen)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(s.utaltOsszeg)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(s.korabbanElszamoltDb)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(s.korabbanElszamoltAlap)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(s.palotaligetResz)]));
+    tr.appendChild(el('td',{class:'num'},[s.megNemSzamoltNetto>0 ? el('span',{class:'badge crit'},[fmtNum(s.megNemSzamoltNetto)]) : fmtNum(s.megNemSzamoltNetto)]));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  const tfoot = el('tfoot');
+  const totalRow = {
+    szamlakDb: sum(SUPPLIERS,'szamlakDb'), nettoOsszesen: sum(SUPPLIERS,'nettoOsszesen'), fizetendoOsszesen: sum(SUPPLIERS,'fizetendoOsszesen'),
+    utaltOsszeg: sum(SUPPLIERS,'utaltOsszeg'), korabbanElszamoltDb: sum(SUPPLIERS,'korabbanElszamoltDb'), korabbanElszamoltAlap: sum(SUPPLIERS,'korabbanElszamoltAlap'),
+    palotaligetResz: sum(SUPPLIERS,'palotaligetResz'), megNemSzamoltNetto: sum(SUPPLIERS,'megNemSzamoltNetto'),
+  };
+  const tf = el('tr');
+  tf.appendChild(el('td',{},['ÖSSZESEN']));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totalRow.szamlakDb)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totalRow.nettoOsszesen)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totalRow.fizetendoOsszesen)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totalRow.utaltOsszeg)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totalRow.korabbanElszamoltDb)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totalRow.korabbanElszamoltAlap)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totalRow.palotaligetResz)]));
+  tf.appendChild(el('td',{class:'num'},[fmtNum(totalRow.megNemSzamoltNetto)]));
+  tfoot.appendChild(tf); table.appendChild(tfoot);
+  wrap.appendChild(table); card.appendChild(wrap);
+  panel.appendChild(card);
+
+  if(NOTES.length){
+    const noteCard = el('div',{class:'card'});
+    noteCard.appendChild(el('h2',{},['Megjegyzések az elszámoláshoz']));
+    const ul = el('div',{class:'stack'});
+    NOTES.forEach(n=> ul.appendChild(el('div',{class:'note-txt'},[n])));
+    noteCard.appendChild(ul);
+    panel.appendChild(noteCard);
+  }
+}
+
+/* ============================ Report builder tab ============================ */
+const REPORT_DIMS = [
+  {key:'szallito', label:'Szállító', fn: it=>it.szallito||'—'},
+  {key:'tipus', label:'Bizonylat típusa', fn: it=>TYPE_GROUPS.group(it.tipus)},
+  {key:'statusz', label:'Státusz', fn: it=>it.statusz||'—'},
+  {key:'afaTipus', label:'ÁFA típusa', fn: it=>it.afaTipus||'—'},
+  {key:'hoTelj', label:'Hónap (teljesítés)', fn: it=> monthLabel(monthKey(it.teljesites))||'—'},
+  {key:'hoUtal', label:'Hónap (utalás)', fn: it=> it.utalasDatum? monthLabel(monthKey(it.utalasDatum)) : 'nincs utalás'},
+  {key:'elszamolva', label:'Elszámolási státusz', fn: it=> it._elszamolva || 'nincs infó'},
+];
+const REPORT_METRICS = [
+  {key:'netto', label:'Nettó (Ft)'},
+  {key:'afa', label:'ÁFA (Ft)'},
+  {key:'visszatartas', label:'Visszatartás (Ft)'},
+  {key:'fizetendo', label:'Számla szerint fizetendő (Ft)'},
+  {key:'utaltOsszeg', label:'Utalt összeg (Ft)'},
+  {key:'elteres', label:'Eltérés (Ft)'},
+];
+const REPORT_AGGS = [
+  {key:'sum', label:'Összeg'},
+  {key:'count', label:'Darabszám'},
+  {key:'avg', label:'Átlag'},
+];
+const reportState = {dim:'szallito', metric:'netto', agg:'sum'};
+
+function computeReport(){
+  const items = filteredItems();
+  const dim = REPORT_DIMS.find(d=>d.key===reportState.dim);
+  const groups = {};
+  items.forEach(it=>{
+    const key = dim.fn(it);
+    if(!groups[key]) groups[key] = [];
+    groups[key].push(it);
+  });
+  const rows = Object.keys(groups).map(key=>{
+    const arr = groups[key];
+    const vals = arr.map(it=> Number(it[reportState.metric])||0);
+    let value;
+    if(reportState.agg==='count') value = arr.length;
+    else if(reportState.agg==='avg') value = vals.length? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+    else value = vals.reduce((a,b)=>a+b,0);
+    return {label:key, value, n:arr.length};
+  });
+  rows.sort((a,b)=> b.value-a.value);
+  return rows;
+}
+
+function renderReportTab(){
+  const panel = $('#panel-report'); panel.innerHTML='';
+  const card = el('div',{class:'card'});
+  card.appendChild(el('h2',{},['Egyedi kimutatás-építő']));
+  card.appendChild(el('div',{class:'hint'},['Csoportosítsd és összesítsd az aktuálisan szűrt tételeket tetszőleges szempont szerint. A Tételek fülön beállított szűrők itt is érvényesülnek.']));
+  const controls = el('div',{class:'report-controls'});
+  const mk=(labelTxt,node)=> el('div',{class:'fgroup'},[el('label',{},[labelTxt]), node]);
+  controls.appendChild(mk('Csoportosítás', buildSelect('r-dim', REPORT_DIMS.map(d=>({value:d.key,label:d.label})), reportState.dim, v=>{reportState.dim=v; renderReportBody();})));
+  controls.appendChild(mk('Mutatószám', buildSelect('r-metric', REPORT_METRICS.map(d=>({value:d.key,label:d.label})), reportState.metric, v=>{reportState.metric=v; renderReportBody();})));
+  controls.appendChild(mk('Aggregáció', buildSelect('r-agg', REPORT_AGGS.map(d=>({value:d.key,label:d.label})), reportState.agg, v=>{reportState.agg=v; renderReportBody();})));
+  controls.appendChild(el('div',{class:'spacer'}));
+  controls.appendChild(el('button',{class:'btn primary', onclick:()=>{
+    const rows = computeReport();
+    const dimLabel = REPORT_DIMS.find(d=>d.key===reportState.dim).label;
+    const metricLabel = REPORT_METRICS.find(d=>d.key===reportState.metric).label + ' — ' + REPORT_AGGS.find(d=>d.key===reportState.agg).label;
+    const csvRows = [[dimLabel, metricLabel, 'Tételek száma']];
+    rows.forEach(r=> csvRows.push([r.label, Math.round(r.value*100)/100, r.n]));
+    downloadCSV('palotaliget_kimutatas.csv', csvRows);
+  }},['⭳ CSV export']));
+  card.appendChild(controls);
+  const chartHost = el('div',{class:'chart-scroll'});
+  card.appendChild(chartHost);
+  const tableHost = el('div',{style:'margin-top:14px;'});
+  card.appendChild(tableHost);
+  panel.appendChild(card);
+
+  function renderReportBody(){
+    const rows = computeReport();
+    chartHost.innerHTML=''; tableHost.innerHTML='';
+    if(!rows.length){ chartHost.innerHTML = '<div class="empty-state">Nincs adat</div>'; return; }
+    const metric = REPORT_METRICS.find(d=>d.key===reportState.metric);
+    const isFt = reportState.agg!=='count';
+    const formatValue = v=> isFt ? fmtCompact(v) : (v+' db');
+    renderRankedBarChart(chartHost, {items: rows.map(r=>({label:r.label, value:r.value, sub:r.n+' tétel'})), formatValue, color:'--s1'});
+
+    const wrap = el('div',{class:'tbl-wrap'});
+    const table = el('table');
+    const thead = el('thead'); const trh = el('tr');
+    [REPORT_DIMS.find(d=>d.key===reportState.dim).label, metric.label+' — '+REPORT_AGGS.find(d=>d.key===reportState.agg).label, 'Tételek száma'].forEach(h=> trh.appendChild(el('th',{},[h])));
+    thead.appendChild(trh); table.appendChild(thead);
+    const tbody = el('tbody');
+    rows.forEach(r=>{
+      const tr = el('tr');
+      tr.appendChild(el('td',{},[r.label]));
+      tr.appendChild(el('td',{class:'num'},[isFt? fmtNum(r.value) : String(Math.round(r.value*100)/100)]));
+      tr.appendChild(el('td',{class:'num'},[String(r.n)]));
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table); tableHost.appendChild(wrap);
+  }
+  renderReportBody();
+}
+
+/* ============================ Previous settlement tab ============================ */
+const prevState = {filter:'all'};
+function renderPrevTab(){
+  const panel = $('#panel-prev'); panel.innerHTML='';
+  const card = el('div',{class:'card'});
+  card.appendChild(el('h2',{},['Összevetés a 2025.08.08-i részelszámolással']));
+  card.appendChild(el('div',{class:'hint'},['HREF Ipari Kft. – Palotaliget Residence Kft. korábbi részelszámolása és a jelen számlaanyag tételes összevetése']));
+  const bar = el('div',{class:'filterbar'});
+  const opts = [{value:'all',label:'Mind'},{value:'IGEN',label:'Korábban elszámolva'},{value:'NEM',label:'Még nem elszámolva'},{value:'csak',label:'Csak a korábbi elszámolásban szerepel'}];
+  bar.appendChild(el('div',{class:'fgroup'},[el('label',{},['Elszámolási státusz']), buildSelect('p-filter', opts, prevState.filter, v=>{prevState.filter=v; renderPrevBody();})]));
+  bar.appendChild(el('div',{class:'spacer'}));
+  bar.appendChild(el('button',{class:'btn primary', onclick:()=>{
+    const rows = prevFiltered();
+    const csv=[['Szállító','Számla','Típus','Teljesítés','Nettó','Fizetendő','Utalt','Korábban elszámolva?','Elszámolás alapja','Palotaliget rész 7,9%','Palotaliget ÁFA','Megjegyzés']];
+    rows.forEach(p=> csv.push([p.szallito,p.szamlaszam,p.tipus,p.teljesites,p.netto,p.fizetendo,p.utalt,p.elszamolva,p.elszamolasAlapja,p.palotaligetResz,p.palotaligetAfa,p.megjegyzes]));
+    downloadCSV('palotaliget_korabbi_elszamolas.csv', csv);
+  }},['⭳ CSV export']));
+  card.appendChild(bar);
+  const tableHost = el('div'); card.appendChild(tableHost);
+  panel.appendChild(card);
+
+  function prevFiltered(){
+    return PREV.filter(p=>{
+      if(prevState.filter==='csak') return p.csakKorabbiban;
+      if(prevState.filter==='all') return true;
+      return p.elszamolva && p.elszamolva.indexOf(prevState.filter)===0;
+    });
+  }
+  function renderPrevBody(){
+    tableHost.innerHTML='';
+    const rows = prevFiltered();
+    const wrap = el('div',{class:'tbl-wrap'});
+    const table = el('table');
+    const thead = el('thead'); const trh = el('tr');
+    ['Szállító','Számla','Típus','Teljesítés','Nettó','Fizetendő','Utalt','Elszámolva?','Elszámolás alapja','Palotaliget rész 7,9%','Megjegyzés'].forEach(h=>trh.appendChild(el('th',{},[h])));
+    thead.appendChild(trh); table.appendChild(thead);
+    const tbody = el('tbody');
+    if(!rows.length) tbody.appendChild(el('tr',{},[el('td',{colspan:11},[el('div',{class:'empty-state'},['Nincs találat'])])]));
+    rows.forEach(p=>{
+      const isIgen = p.elszamolva && p.elszamolva.indexOf('IGEN')===0;
+      const tr = el('tr',{class: p.csakKorabbiban? 'r-warning' : ''});
+      tr.appendChild(el('td',{},[p.szallito||'']));
+      tr.appendChild(el('td',{},[p.szamlaszam||'']));
+      tr.appendChild(el('td',{class:'wrap'},[p.tipus||'']));
+      tr.appendChild(el('td',{},[fmtDate(p.teljesites)]));
+      tr.appendChild(el('td',{class:'num'},[fmtNum(p.netto)]));
+      tr.appendChild(el('td',{class:'num'},[fmtNum(p.fizetendo)]));
+      tr.appendChild(el('td',{class:'num'},[fmtNum(p.utalt)]));
+      tr.appendChild(el('td',{},[el('span',{class:'badge '+(isIgen?'good':'warn')},[isIgen?'✓ igen':'nem'])]));
+      tr.appendChild(el('td',{class:'num'},[fmtNum(p.elszamolasAlapja)]));
+      tr.appendChild(el('td',{class:'num'},[fmtNum(p.palotaligetResz)]));
+      tr.appendChild(el('td',{class:'wrap note-txt'},[p.megjegyzes||'']));
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table); tableHost.appendChild(wrap);
+  }
+  renderPrevBody();
+}
+
+/* ============================ Flags / missing tab ============================ */
+function renderFlagsTab(){
+  const panel = $('#panel-flags'); panel.innerHTML='';
+
+  if(MISSING.length){
+    const card = el('div',{class:'card'});
+    card.appendChild(el('h2',{},['Hiányzó utalási bizonylatok']));
+    card.appendChild(el('div',{class:'hint'},['Olyan számlák, amelyekhez jelenleg nem áll rendelkezésre banki utalási bizonylat']));
+    const stack = el('div',{class:'stack'});
+    MISSING.forEach(m=>{
+      stack.appendChild(el('div',{class:'flagcard'},[
+        el('div',{class:'fc-top'},[
+          el('div',{class:'fc-title'},[`${m.szallito} — ${m.szamlaszam}`]),
+          el('div',{class:'fc-amt'},[fmtFt(m.fizetendo)]),
+        ]),
+        el('div',{class:'mini'},[`${m.tipus} · fizetési határidő: ${fmtDate(m.hatarido)}`]),
+      ]));
+    });
+    card.appendChild(stack);
+    panel.appendChild(card);
+  }
+
+  const flagged = ITEMS.filter(i=>i._flagged && !i._noTransfer);
+  const card2 = el('div',{class:'card'});
+  card2.appendChild(el('h2',{},['Egyeztetendő / eltérést tartalmazó tételek']));
+  card2.appendChild(el('div',{class:'hint'},['Tételek, ahol az utalt összeg eltér a számla szerint fizetendőtől, vagy a forrás kimutatás egyeztetést kér']));
+  if(!flagged.length){
+    card2.appendChild(el('div',{class:'empty-state'},['Nincs ilyen tétel']));
+  } else {
+    const stack2 = el('div',{class:'stack'});
+    flagged.forEach(it=>{
+      stack2.appendChild(el('div',{class:'flagcard'+(it.elteres&&it.elteres!==0?'':' warn')},[
+        el('div',{class:'fc-top'},[
+          el('div',{class:'fc-title'},[`${it.szallito} — ${it.szamlaszam}`]),
+          el('div',{class:'fc-amt'},[it.elteres? fmtFt(it.elteres) : '']),
+        ]),
+        el('div',{class:'mini'},[`${it.tipus} · teljesítés: ${fmtDate(it.teljesites)} · fizetendő: ${fmtFt(it.fizetendo)} · utalt: ${fmtFt(it.utaltOsszeg)}`]),
+        el('div',{class:'fc-note'},[it.megjegyzes||'']),
+      ]));
+    });
+    card2.appendChild(stack2);
+  }
+  panel.appendChild(card2);
+
+  const nonPayable = ITEMS.filter(i=>i._nemFizetendo);
+  const card3 = el('div',{class:'card'});
+  card3.appendChild(el('h2',{},['Sztornó / nem fizetendő tételek (tájékoztató jelleggel)']));
+  card3.appendChild(el('div',{class:'hint'},['Ezek a tételek nem részei az összesítő KPI-oknak, de a teljes kép miatt itt is szerepelnek']));
+  const wrap = el('div',{class:'tbl-wrap'});
+  const table = el('table');
+  const thead = el('thead'); const trh = el('tr');
+  ['Szállító','Számla','Típus','Teljesítés','Nettó','Megjegyzés'].forEach(h=>trh.appendChild(el('th',{},[h])));
+  thead.appendChild(trh); table.appendChild(thead);
+  const tbody = el('tbody');
+  nonPayable.forEach(it=>{
+    const tr = el('tr',{class:'r-muted'});
+    tr.appendChild(el('td',{},[it.szallito]));
+    tr.appendChild(el('td',{},[it.szamlaszam]));
+    tr.appendChild(el('td',{class:'wrap'},[it.tipus]));
+    tr.appendChild(el('td',{},[fmtDate(it.teljesites)]));
+    tr.appendChild(el('td',{class:'num'},[fmtNum(it.netto)]));
+    tr.appendChild(el('td',{class:'wrap note-txt'},[it.megjegyzes||'']));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody); wrap.appendChild(table); card3.appendChild(wrap);
+  panel.appendChild(card3);
+}
+
+/* ============================ orchestration ============================ */
+function refreshDependentUI(){
+  renderOverview();
+  buildTabs();
+  // preserve active tab highlighting after rebuilding nav
+  const activeId = $('.tab-panel.active')?.id.replace('panel-','') || 'overview';
+  $$('.tab-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===activeId));
+}
+
+function init(){
+  $('#meta-source').textContent = DATA.meta.source;
+  $('#meta-date').textContent = DATA.meta.generated;
+  $('#meta-count').textContent = ITEMS.length + ' db';
+  buildTabs();
+  renderOverview();
+  renderItemsTab();
+  renderSuppliersTab();
+  renderReportTab();
+  renderPrevTab();
+  renderFlagsTab();
+}
+init();
+
+})();
+</script>
